@@ -1,0 +1,100 @@
+image: alpine:latest
+
+variables:
+  TARGET: "ProjetS6-MarcNGUYEN-ThomasLARDY"
+
+stages:
+  - test
+  - build
+  - pages
+  - deploy
+
+pages:
+  image: alpine:latest
+  stage: pages
+  script: 
+  - apk add doxygen graphviz ghostscript-fonts
+  - doxygen Doxyfile
+  - mv webdoc/html/ public/
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+  - tags
+  - gitlab-ci-test
+
+build-linux:
+  image: alpine:latest
+  stage: build
+  script: 
+  - apk add build-base
+  - make -j4
+  artifacts:
+    paths:
+      - bin/$TARGET
+    expire_in: 1 week
+  only:
+  - master
+  - tags
+  - gitlab-ci-test
+
+test-docs:
+  image: alpine:latest
+  stage: test
+  script:
+  - apk add doxygen graphviz ghostscript-fonts
+  - doxygen Doxyfile
+
+test-build-linux:
+  image: alpine:latest
+  stage: build
+  script:
+  - apk add build-base
+  - make -j4
+  except:
+  - master
+  - tags
+  - gitlab-ci-test
+
+unit-tests-linux:
+  image: alpine:latest
+  stage: test
+  script:
+  - apk add build-base
+  - make tests -j4
+  - for file in bin/*; do $file; done
+
+production:
+  type: deploy
+  dependencies:
+    - build-linux
+    - pages
+    - unit-tests-linux
+  script:
+    - echo "0"
+  artifacts:
+    name: "$TARGET"
+    paths:
+      - ./
+    expire_in: 1 year
+  only:
+  - tags
+  - gitlab-ci-test
+
+production-master:
+  type: deploy
+  dependencies:
+    - build-linux
+    - pages
+    - unit-tests-linux
+  script:
+    - echo "0"
+  artifacts:
+    name: "$TARGET-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - ./
+    expire_in: 1 year
+  only:
+  - master
+  - gitlab-ci-test
