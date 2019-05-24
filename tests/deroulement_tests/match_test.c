@@ -19,6 +19,6 @@
  * @return int Exit 0.
  */
 int main(void) {
-    printf("match_test:\n"); // File
-    return 0;
+  printf("match_test:\n");  // File
+  return 0;
 }

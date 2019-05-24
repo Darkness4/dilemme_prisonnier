@@ -19,7 +19,7 @@
  */
 
 #include "template.h"
-#define BUFFER_SIZE_LAMBDA 40 // No pointer, no memory. A MACRO.
+#define BUFFER_SIZE_LAMBDA 40  // No pointer, no memory. A MACRO.
 
 const int SHARED_GLOBAL = 32;
 
@@ -27,7 +27,7 @@ static const int PRIVATE_GLOBAL = 32;
 
 volatile int shared_variable = 32;
 
-static volatile int _private_variable = 32; // Useful for getters/setters.
+static volatile int _private_variable = 32;  // Useful for getters/setters.
 
 enum PinStateType { PIN_OFF, PIN_ON };
 

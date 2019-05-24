@@ -19,6 +19,6 @@
  * @return int Exit 0.
  */
 int main(void) {
-    printf("score_test:\n"); // File
-    return 0;
+  printf("score_test:\n");  // File
+  return 0;
 }

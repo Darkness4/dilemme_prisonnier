@@ -27,4 +27,4 @@ extern volatile int shared_variable;
  */
 int shared_function(int var);
 
-#endif // TEMP_H
+#endif  // TEMP_H

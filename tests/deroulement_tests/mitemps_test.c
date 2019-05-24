@@ -19,6 +19,6 @@
  * @return int Exit 0.
  */
 int main(void) {
-    printf("mitemps_test:\n"); // File
-    return 0;
+  printf("mitemps_test:\n");  // File
+  return 0;
 }
