@@ -17,13 +17,15 @@ BINDIR ?= bin
 TESTDIR ?= tests
 
 # Get all files based on project structure
-SOURCES := $(wildcard $(SRCDIR)/*.c)
-SOURCES_TEST := $(wildcard $(TESTDIR)/*.c)
-INCLUDES := $(wildcard $(SRCDIR)/*.h)
-INCLUDES_TEST := $(wildcard $(TESTDIR)/*.h)
+SOURCES := $(shell find $(SRCDIR)/ -type f -name '*.c')
+SOURCES_TEST := $(shell find $(TESTDIR)/ -type f -name '*.c')
+INCLUDES := $(shell find $(SRCDIR)/ -type f -name '*.h')
+INCLUDES_TEST := $(shell find $(TESTDIR)/ -type f -name '*.h')
 OBJECTS := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 OBJECTS_TEST := $(SOURCES_TEST:$(TESTDIR)/%.c=$(OBJDIR)/%.o)
 EXECUTABLE_TEST := $(SOURCES_TEST:$(TESTDIR)/%.c=$(BINDIR)/%)
+OBJECTS_NOMAIN := $(filter-out obj/main.o,$(OBJECTS))
+
 
 # Cleaner
 rm = rm -rf
@@ -44,21 +46,21 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 	$(LINKER) $^ $(LFLAGS) -o $@
 	@echo "Linking complete!"
 
-$(BINDIR)/$(EXECUTABLE_TEST): $(OBJECTS_TEST) $(OBJECTS)
+$(BINDIR)/$(EXECUTABLE_TEST): $(BINDIR)/% : $(OBJDIR)/%.o $(OBJECTS_NOMAIN)
 	@mkdir -p $(BINDIR)
 	$(LINKER) $^ $(LFLAGS) -o $@
 	@echo "Linking complete!"
 
 # Compile
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
-	@mkdir -p $(OBJDIR)
+	@mkdir -p $(shell dirname $@)
 	$(CC) $(CFLAGS) -c $< -o $@
-	@echo "Compiled "$<" successfully!"
+	@echo "Compiled $< successfully!"
 
 $(OBJECTS_TEST): $(OBJDIR)/%.o : $(TESTDIR)/%.c
-	@mkdir -p $(OBJDIR)
+	@mkdir -p $(shell dirname $@)
 	$(CC) $(CFLAGS) -c $< -o $@
-	@echo "Compiled "$<" successfully!"
+	@echo "Compiled $< successfully!"
 
 .PHONY: echoes
 echoes:
@@ -76,7 +78,6 @@ echoes:
 	@echo "$(SOURCES_TEST)"
 	@echo "EXECUTABLE_TEST :"
 	@echo "$(EXECUTABLE_TEST)"
-
 
 .PHONY: clean
 clean:
