@@ -18,4 +18,7 @@
  *
  * @return int Exit 0.
  */
-int main(void) { return 0; }
+int main(void) {
+    printf("score_view_test:\n"); // File
+    return 0;
+}

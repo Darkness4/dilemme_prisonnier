@@ -63,7 +63,7 @@ unit-tests-linux:
   script:
   - apk add build-base
   - make tests -j4
-  - for file in bin/*; do $file; done
+  - find bin/ -type f ! -name $TARGET -exec {} \;
 
 production:
   type: deploy
