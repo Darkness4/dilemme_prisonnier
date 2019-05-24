@@ -23,6 +23,7 @@ INCLUDES := $(wildcard $(SRCDIR)/*.h)
 INCLUDES_TEST := $(wildcard $(TESTDIR)/*.h)
 OBJECTS := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 OBJECTS_TEST := $(SOURCES_TEST:$(TESTDIR)/%.c=$(OBJDIR)/%.o)
+EXECUTABLE_TEST := $(SOURCES_TEST:$(TESTDIR)/%.c=$(BINDIR)/%)
 
 # Cleaner
 rm = rm -rf
@@ -32,7 +33,7 @@ executable: $(BINDIR)/$(TARGET)
 all: $(BINDIR)/$(TARGET) tests
 
 tests: CFLAGS += -g
-tests: $(BINDIR)/population_test $(BINDIR)/statistique_test $(BINDIR)/jouer_un_tour_test
+tests: $(BINDIR)/template_test
 
 debug: CFLAGS += -g
 debug: all
@@ -43,18 +44,7 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 	$(LINKER) $^ $(LFLAGS) -o $@
 	@echo "Linking complete!"
 
-# Link tests
-$(BINDIR)/jouer_un_tour_test: $(OBJDIR)/jouer_un_tour_test.o $(OBJDIR)/jouer_un_tour.o $(OBJDIR)/population.o
-	@mkdir -p $(BINDIR)
-	$(LINKER) $^ $(LFLAGS) -o $@
-	@echo "Linking complete!"
-
-$(BINDIR)/population_test: $(OBJDIR)/population_test.o $(OBJDIR)/population.o
-	@mkdir -p $(BINDIR)
-	$(LINKER) $^ $(LFLAGS) -o $@
-	@echo "Linking complete!"
-
-$(BINDIR)/statistique_test: $(OBJDIR)/statistique_test.o $(OBJDIR)/population.o $(OBJDIR)/statistique.o
+$(BINDIR)/$(EXECUTABLE_TEST): $(OBJECTS_TEST) $(OBJECTS)
 	@mkdir -p $(BINDIR)
 	$(LINKER) $^ $(LFLAGS) -o $@
 	@echo "Linking complete!"
@@ -74,16 +64,18 @@ $(OBJECTS_TEST): $(OBJDIR)/%.o : $(TESTDIR)/%.c
 echoes:
 	@echo "OBJECTS :"
 	@echo "$(OBJECTS)"
-	@echo "OBJECTS :"
+	@echo "OBJECTS_TEST :"
 	@echo "$(OBJECTS_TEST)"
 	@echo "INCLUDES :"
 	@echo "$(INCLUDES)"
-	@echo "INCLUDES :"
+	@echo "INCLUDES_TEST :"
 	@echo "$(INCLUDES_TEST)"
 	@echo "SOURCES :"
 	@echo "$(SOURCES)"
 	@echo "SOURCES_TEST :"
 	@echo "$(SOURCES_TEST)"
+	@echo "EXECUTABLE_TEST :"
+	@echo "$(EXECUTABLE_TEST)"
 
 
 .PHONY: clean

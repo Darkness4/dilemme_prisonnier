@@ -11,17 +11,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../src/template.h"
+
 /**
- * @brief Main pour tourner les tests unitaires.
+ * @brief Tests unitaires.
  *
  * @return int Exit 0.
  */
 int main(void) {
-    printf("jouer_un_tour_test:\n"); // File
+    printf("template_test:\n"); // File
     // Pre-script Here
-    printf("  zombiePresent:\n"); // Group
+    printf("  function:\n"); // Group
     // Script Here
-    // assert(!zombiePresent(population));
-    printf("    False: \x1B[32mOK\x1B[0m\n"); // Pass
+    assert(shared_function(2) == 4);
+    printf("    Function return 2*2 correctly: \x1B[32mOK\x1B[0m\n"); // Pass
+    assert(shared_function(3) == 6);
+    printf("    Function return 3*2 correctly: \x1B[32mOK\x1B[0m\n"); // Pass
     return 0;
 }
