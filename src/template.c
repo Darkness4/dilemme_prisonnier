@@ -1,5 +1,5 @@
 /**
- * @file temp.c
+ * @file template.c
  *
  * @brief XXXXX
  *
