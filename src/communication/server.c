@@ -1,7 +1,7 @@
 /**
  * @file server.c  // TODO: Fill
  *
- * @brief XXXXX
+ * @brief Serveur/Jeu gérant la progression d'un jeu.
  *
  * **Description Here**
  *

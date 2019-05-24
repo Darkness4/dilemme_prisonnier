@@ -1,7 +1,7 @@
 /**
  * @file mitemps.c  // TODO: Fill
  *
- * @brief XXXXX
+ * @brief Fonctions utilisées durant la mitemps des parties.
  *
  * **Description Here**
  *

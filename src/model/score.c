@@ -1,7 +1,7 @@
 /**
  * @file score.c  // TODO: Fill
  *
- * @brief XXXXX
+ * @brief Contient les informations à propos du score.
  *
  * **Description Here**
  *

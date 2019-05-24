@@ -1,7 +1,7 @@
 /**
  * @file preparation.c  // TODO: Fill
  *
- * @brief XXXXX
+ * @brief Fonctions permettant la préparation des parties.
  *
  * **Description Here**
  *

@@ -1,7 +1,7 @@
 /**
  * @file match.c  // TODO: Fill
  *
- * @brief XXXXX
+ * @brief Fonctions permettant le fonctionnement des parties.
  *
  * **Description Here**
  *

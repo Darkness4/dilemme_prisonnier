@@ -1,7 +1,7 @@
 /**
  * @file client.c  // TODO: Fill
  *
- * @brief XXXXX
+ * @brief Client/Joueur pouvant communiquer avec d'autres clients/serveur.
  *
  * **Description Here**
  *

@@ -35,7 +35,7 @@ executable: $(BINDIR)/$(TARGET)
 all: $(BINDIR)/$(TARGET) tests
 
 tests: CFLAGS += -g
-tests: $(BINDIR)/template_test
+tests: $(EXECUTABLE_TEST)
 
 debug: CFLAGS += -g
 debug: all
@@ -46,8 +46,8 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 	$(LINKER) $^ $(LFLAGS) -o $@
 	@echo "Linking complete!"
 
-$(BINDIR)/$(EXECUTABLE_TEST): $(BINDIR)/% : $(OBJDIR)/%.o $(OBJECTS_NOMAIN)
-	@mkdir -p $(BINDIR)
+$(EXECUTABLE_TEST): $(BINDIR)/% : $(OBJDIR)/%.o $(OBJECTS_NOMAIN)
+	@mkdir -p $(shell dirname $@)
 	$(LINKER) $^ $(LFLAGS) -o $@
 	@echo "Linking complete!"
 

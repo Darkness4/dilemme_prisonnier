@@ -1,7 +1,7 @@
 /**
  * @file score_view.c  // TODO: Fill
  *
- * @brief XXXXX
+ * @brief Fonctions permettant le traitement et l'affichage du score.
  *
  * **Description Here**
  *
