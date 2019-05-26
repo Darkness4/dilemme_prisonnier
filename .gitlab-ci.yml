@@ -66,7 +66,7 @@ unit-tests-linux:
   script:
   - apk add build-base
   - make tests -j4
-  - find bin/ -type f ! -name $TARGET_CLIENT ! -name $TARGET_SERVER -exec {} \;
+  - find bin/ -type f -exec {} \;
 
 production:
   type: deploy
