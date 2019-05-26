@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../../src/deroulement/mitemps.h"
+#include "../../../src/server/deroulement/preparation.h"
 
 /**
  * @brief Tests unitaires.
@@ -19,6 +19,6 @@
  * @return int Exit 0.
  */
 int main(void) {
-  printf("mitemps_test:\n");  // File
+  printf("preparation_test:\n");  // File
   return 0;
 }

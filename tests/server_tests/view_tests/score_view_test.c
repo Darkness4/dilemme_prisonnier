@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../../src/communication/server.h"
+#include "../../../src/server/view/score_view.h"
 
 /**
  * @brief Tests unitaires.
@@ -19,6 +19,6 @@
  * @return int Exit 0.
  */
 int main(void) {
-  printf("server_test:\n");  // File
+  printf("score_view_test:\n");  // File
   return 0;
 }

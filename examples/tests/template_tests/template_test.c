@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../src/template.h"
+#include "../../src/template/template.h"
 
 /**
  * @brief Tests unitaires.

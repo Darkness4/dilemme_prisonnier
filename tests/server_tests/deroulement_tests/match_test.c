@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../../src/deroulement/match.h"
+#include "../../../src/server/deroulement/match.h"
 
 /**
  * @brief Tests unitaires.
