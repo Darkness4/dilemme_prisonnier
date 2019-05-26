@@ -2,8 +2,6 @@ image: alpine:latest
 
 variables:
   TARGET: "Dilemme_Prisonnier"
-  TARGET_CLIENT: "$TARGET_client"
-  TARGET_SERVER: "$TARGET_server"
 
 stages:
   - test
@@ -34,8 +32,8 @@ build-linux:
   - make -j4
   artifacts:
     paths:
-      - bin/$TARGET_CLIENT
-      - bin/$TARGET_SERVER
+      - bin/${TARGET}_CLIENT
+      - bin/${TARGET}_SERVER
     expire_in: 1 week
   only:
   - master
@@ -77,7 +75,7 @@ production:
   script:
     - echo "0"
   artifacts:
-    name: "$TARGET"
+    name: "${TARGET}"
     paths:
       - ./
     expire_in: 1 year
@@ -94,7 +92,7 @@ production-master:
   script:
     - echo "0"
   artifacts:
-    name: "$TARGET-$CI_COMMIT_SHORT_SHA"
+    name: "${TARGET}-${CI_COMMIT_SHORT_SHA}"
     paths:
       - ./
     expire_in: 1 year
