@@ -33,7 +33,7 @@ build-linux:
   artifacts:
     paths:
       - bin/${TARGET}_client
-      - bin/${TARGET}_client
+      - bin/${TARGET}_server
     expire_in: 1 week
   only:
   - master
