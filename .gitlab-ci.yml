@@ -1,7 +1,7 @@
 image: alpine:latest
 
 variables:
-  TARGET: "Dilemme_Prisonnier"
+  TARGET: "dilemme_prisonnier"
 
 stages:
   - test
@@ -32,8 +32,8 @@ build-linux:
   - make -j4
   artifacts:
     paths:
-      - bin/${TARGET}_CLIENT
-      - bin/${TARGET}_SERVER
+      - bin/${TARGET}_client
+      - bin/${TARGET}_client
     expire_in: 1 week
   only:
   - master
