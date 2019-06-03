@@ -5,7 +5,7 @@ TARGET_SERVER ?= $(shell basename $(CURDIR))_server
 
 # Compiler
 CC ?= gcc
-CFLAGS ?= -std=c11 -pedantic -Wall -Wextra -lm -I .
+CFLAGS ?= -std=gnu11 -pedantic -Wall -Wextra -lm -I .
 
 # Linker
 LINKER ?= $(CC)
