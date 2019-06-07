@@ -23,8 +23,34 @@
  * @date 20 Mai 2019
  */
 
+#include <arpa/inet.h>
+#include <assert.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
+#include "deroulement/preparation.h"
+#include "error_handler/error_handler.h"
+#include "ligne/ligne.h"
+#include "model/client_thread.h"
+#include "model/datacontext.h"
+#include "resolv/resolv.h"
+
+#define FAUX 0
+#define VRAI 1
+
+void creerClientThread(struct Client_Thread** client_threads);
+struct Client_Thread* chercherWorkerLibre(struct Client_Thread**);
 
 static void printHelp(void);
 
@@ -37,43 +63,69 @@ static void printHelp(void);
  * @param argv
  * @return int exit(0)
  */
-int main(int argc, char const *argv[]) {
-  // Defauts
-  /* Code */  // TODO: Fill
 
-  // Arguments positionnés
-  // long x, y;  // TODO: Fill
-  // unsigned long cote;
-  // if (argc < 2) {
-  //     printf("ERREUR : Pas assez d'arguments.\n\n");
-  //     printHelp();
-  // }
-  // if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
-  //     printHelp();
-  // if (argc < 4) {
-  //     printf("ERREUR : Pas assez d'arguments.\n\n");
-  //     printHelp();
-  // }
-  // sscanf(argv[1], "%li", &x);
-  // sscanf(argv[2], "%li", &y);
-  // sscanf(argv[3], "%lu", &cote);
+int main(int argc, char const* argv[]) {
+  int soc, ret, canal;
+  short port;
+  struct sockaddr_in adrEcoute, adrClient;
+  unsigned int lgAdrClient;
+  struct Client_Thread* thread_libre;
+  struct DC* datacontext = creerDC();
+  pthread_t partie;
+  pthread_create(&partie, NULL, preparation, datacontext);
+  if (sem_init(&sem_global, 0, NB_JOUEURS_MAX) == -1) erreur_IO("sem_init");
 
-  // Arguments nommés (incrémenter i_défaut si arguments positionné)
-  // for (int i = 4; i < argc; i++) {
-  //     if (!strcmp(argv[i], "-b") || !strcmp(argv[i], "--mort"))
-  //         sscanf(argv[i + 1], "%lf", &beta);
-  // }
+  // Arguments positionnés: numéro de port
+  if (argc != 2) erreur("usage: %s port\n", argv[0]);
 
-  // Init
-  /* Code */  // TODO: Fill
+  port = (short)atoi(argv[1]);
 
-  // Traitement
-  /* Code */  // TODO: Fill
+  printf("Server: creating a socket\n");
+  soc = socket(AF_INET, SOCK_STREAM, 0);  // creation socket
+  if (soc < 0) erreur_IO("socket");
 
-  // Output
-  /* Code */  // TODO: Fill
+  adrEcoute.sin_family = AF_INET;
+  adrEcoute.sin_addr.s_addr = INADDR_ANY;
+  adrEcoute.sin_port = htons(port);
+  printf("Server: binding to INADDR_ANY address on port %d\n", port);
+  ret = bind(soc, (struct sockaddr*)&adrEcoute, sizeof(adrEcoute));
+  if (ret < 0) erreur_IO("bind");
+  printf("Server: listening to socket\n");
+  ret = listen(soc, 23);
+  if (ret < 0) erreur_IO("listen");
+
+  while (1) {
+    sem_wait(&sem_global);
+    canal = accept(soc, (struct sockaddr*)&adrClient, &lgAdrClient);
+    if (canal < 0) erreur_IO("accept");
+
+    printf("Server: adr %s, port %hu\n",
+           stringIP(ntohl(adrClient.sin_addr.s_addr)),
+           ntohs(adrClient.sin_port));
+
+    while ((thread_libre = chercherWorkerLibre(datacontext->client_threads)) ==
+           NULL)
+      usleep(1);
+    thread_libre->canal = canal;
+    if (lireLigne(canal, thread_libre->pseudo) < 0) erreur_IO("lireLigne");
+    thread_libre->joueur = creerJoueur(thread_libre->pseudo);
+    ajouterJoueur(datacontext->liste_joueurs, thread_libre->joueur);
+    sem_post(&(thread_libre->sem));
+  }
+  if (close(soc) == -1) erreur_IO("fermeture ecoute");
 
   return 0;
+}
+
+// retourne le numero du worker libre ou -1 si pas de worker libre
+struct Client_Thread* chercherWorkerLibre(
+    struct Client_Thread** client_threads) {
+  int i = 0;
+  while (client_threads[i]->libre == 0 && i < NB_JOUEURS_MAX) i++;
+  if (i < NB_JOUEURS_MAX)
+    return client_threads[i];
+  else
+    return NULL;
 }
 
 /**

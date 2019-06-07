@@ -19,3 +19,19 @@
  */
 
 #include "mitemps.h"
+
+#include <stdlib.h>
+
+#include "match_thread.h"
+#include "preparation.h"
+#include "../view/joueur_view.h"
+
+void mitemps(struct DC* datacontext) {
+  // Chat Global + Commands /quit /pret
+  setEtatListeJoueurs(datacontext->liste_joueurs, ATTENTE);
+  joinMatchWorkers(datacontext->liste_matches);
+
+  // Output
+  afficherScoreListeJoueurs(datacontext->liste_joueurs);
+  setEtatListeJoueurs(datacontext->liste_joueurs, NOT_PRET);
+}
