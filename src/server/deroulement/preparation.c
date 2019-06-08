@@ -24,11 +24,11 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "../../../src/server/view/match_view.h"
 #include "../error_handler/error_handler.h"
 #include "../model/datacontext.h"
+#include "../view/joueur_view.h"
+#include "../view/match_view.h"
 #include "match_thread.h"
-#include "mitemps.h"
 
 static const long SCORE_DEFAULT = 1000000;  // TODO: Move to cfg
 static const char DURATION = 10;
@@ -55,9 +55,18 @@ void* preparation(void* val) {
       }
     }
     setEtatListeJoueurs(datacontext->liste_joueurs, ATTENTE);
+    broadcastJoueurs(datacontext->liste_joueurs,
+                     "/pret pour chercher un match...\n");
+    broadcastJoueurs(datacontext->liste_joueurs, "CMDS: /pret /quit\n");
     creerMatchWorkers(datacontext->liste_matches);
     afficherListeMatches(datacontext->liste_matches);
-    mitemps(datacontext);
+
+    // Traitement
+    joinMatchWorkers(datacontext->liste_matches);
+
+    // Output
+    afficherScoreListeJoueurs(datacontext->liste_joueurs);
+    setEtatListeJoueurs(datacontext->liste_joueurs, NOT_PRET);
   }
   pthread_exit(NULL);
 }

@@ -23,6 +23,7 @@
 #include <stdio.h>
 
 #include "../error_handler/error_handler.h"
+#include "../ligne/ligne.h"
 #include "../view/joueur_view.h"
 
 // TODO: Move to cfg
@@ -67,6 +68,13 @@ static void *_matchThread(void *val) {
   match->joueur[1]->match = match;
   match->joueur[0]->id_joueur_match = 0;
   match->joueur[1]->id_joueur_match = 1;
+  int lgEcr =
+      ecrireLigne(match->joueur[0]->canal, "Un match est disponible !\n");
+  lgEcr += ecrireLigne(match->joueur[0]->canal, "CMDS: /start /quit\n");
+  if (lgEcr <= -1) erreur_IO("ecrireLigne");
+  lgEcr = ecrireLigne(match->joueur[1]->canal, "Un match est disponible !\n");
+  lgEcr += ecrireLigne(match->joueur[1]->canal, "CMDS: /start /quit\n");
+  if (lgEcr <= -1) erreur_IO("ecrireLigne");
 
   printf("[DEBUG] %s VS %s: Les joueurs doivent accepter !\n",
          match->joueur[0]->pseudo, match->joueur[1]->pseudo);
@@ -90,6 +98,16 @@ static void *_matchThread(void *val) {
            match->joueur[1]->pseudo, match->round_count);
     printf("[DEBUG] %s VS %s: Waiting for decisions...\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
+    lgEcr = ecrireLigne(match->joueur[0]->canal,
+                        "Souhaitez-vous trahir ou coopérer ?\n");
+    lgEcr +=
+        ecrireLigne(match->joueur[0]->canal, "CMDS: /trahir /coop /quit\n");
+    if (lgEcr <= -1) erreur_IO("ecrireLigne");
+    lgEcr = ecrireLigne(match->joueur[1]->canal,
+                        "Souhaitez-vous trahir ou coopérer ?\n");
+    lgEcr +=
+        ecrireLigne(match->joueur[1]->canal, "CMDS: /trahir /coop /quit\n");
+    if (lgEcr <= -1) erreur_IO("ecrireLigne");
 
     // Les clients handlers sont en train de travailler...
 
@@ -139,9 +157,15 @@ static void *_matchThread(void *val) {
   printf("[DEBUG] Fin match !\n");
 
   match->joueur[0]->etat = ATTENTE;
-  sem_post(&match->joueur[0]->notification_sem);
+  lgEcr =
+      ecrireLigne(match->joueur[0]->canal, "/pret pour chercher un match...\n");
+  lgEcr += ecrireLigne(match->joueur[0]->canal, "CMDS: /pret /quit\n");
+  if (lgEcr <= -1) erreur_IO("ecrireLigne");
   match->joueur[1]->etat = ATTENTE;
-  sem_post(&match->joueur[1]->notification_sem);
+  lgEcr =
+      ecrireLigne(match->joueur[1]->canal, "/pret pour chercher un match...\n");
+  lgEcr += ecrireLigne(match->joueur[1]->canal, "CMDS: /pret /quit\n");
+  if (lgEcr <= -1) erreur_IO("ecrireLigne");
   match->etat = ENDED;
 
   // Fin de Round

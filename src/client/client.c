@@ -87,7 +87,7 @@ int main(int argc, char const *argv[]) {
   if (ret < 0) erreur_IO("connect");
 
   // Envoyer le pseudo au serveur
-  lgEcr = ecrireLigne(soc, argv[3]);
+  lgEcr = ecrireLigne(soc, (char *)argv[3]);
   if (lgEcr == -1) erreur_IO("ecrireLigne");
 
   pid = fork();
@@ -142,6 +142,7 @@ static void intHandler(int sig) {
   int lgEcr = ecrireLigne(soc, "/quit\n");
   if (lgEcr == -1) erreur_IO("ecrireLigne");
   if (close(soc) == -1) erreur_IO("close socket");
+  printf("Interrupt catched: %i", sig);
   kill(pid, SIGTERM);
   exit(SIGINT);
 }

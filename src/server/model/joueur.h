@@ -56,7 +56,6 @@ struct Joueur {
    * @brief Joueur canal
    */
   int canal;
-  sem_t notification_sem;
 };
 
 struct ListeJoueurs {

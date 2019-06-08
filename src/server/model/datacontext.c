@@ -1,7 +1,7 @@
 /**
- * @file mitemps.c  // TODO: Fill
+ * @file datacontext.c  // TODO: Fill
  *
- * @brief Fonctions utilisées durant la mitemps des parties.
+ * @brief Fonctions utilisées durant la datacontext des parties.
  *
  * **Description Here**
  *
