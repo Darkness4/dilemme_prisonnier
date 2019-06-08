@@ -39,7 +39,7 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-#include "deroulement/preparation.h"
+#include "deroulement/deroulement.h"
 #include "error_handler/error_handler.h"
 #include "ligne/ligne.h"
 #include "model/client_thread.h"
@@ -52,10 +52,11 @@
 void creerClientThread(struct Client_Thread** client_threads);
 struct Client_Thread* chercherWorkerLibre(struct Client_Thread**);
 
+/// Affiche l'aide
 static void printHelp(void);
 
 /**
- * @brief Description How2use.  // TODO: Fill
+ * @brief Programme principal Serveur.
  *
  * Executez le programme avec l'argument --help pour connaitre les arguments.
  *
@@ -63,7 +64,6 @@ static void printHelp(void);
  * @param argv
  * @return int exit(0)
  */
-
 int main(int argc, char const* argv[]) {
   int soc, ret, canal;
   short port;
@@ -72,11 +72,15 @@ int main(int argc, char const* argv[]) {
   struct Client_Thread* thread_libre;
   struct DC* datacontext = creerDC();
   pthread_t partie;
-  pthread_create(&partie, NULL, preparation, datacontext);
+  pthread_create(&partie, NULL, deroulement, datacontext);
   if (sem_init(&sem_global, 0, NB_JOUEURS_MAX) == -1) erreur_IO("sem_init");
 
-  // Arguments positionnés: numéro de port
-  if (argc != 2) erreur("usage: %s port\n", argv[0]);
+  // Arguments positionnés
+  if (argc < 2) {
+    printf("ERREUR : Pas assez d'arguments.\n\n");
+    printHelp();
+  }
+  if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) printHelp();
 
   port = (short)atoi(argv[1]);
 
@@ -117,7 +121,7 @@ int main(int argc, char const* argv[]) {
   return 0;
 }
 
-// retourne le numero du worker libre ou -1 si pas de worker libre
+/// retourne le numero du worker libre ou -1 si pas de worker libre
 struct Client_Thread* chercherWorkerLibre(
     struct Client_Thread** client_threads) {
   int i = 0;
@@ -128,18 +132,12 @@ struct Client_Thread* chercherWorkerLibre(
     return NULL;
 }
 
-/**
- * @brief Affiche l'aide.
- *
- */
 static void printHelp(void) {
   printf(  // TODO: Fill
-      "{TITRE} par Marc NGUYEN et Thomas LARDY en {DATE}\n\
+      "Serveur pour le Dilemme du Prisonnier Multijoueur par Marc NGUYEN et\n\
+Thomas LARDY en Mai 2019\n\
 \n\
-Usage: {EXECUTABLE} <x> <y> <cote> [options...]\n\n\
-{CATEGORIE} Options:\n\
-  -c,  --commande         {DESCRIPTION}                            [défaut: 100]\n\
-\n\
+Usage: dilemme_prisonnier_server <port>\n\n\
 Autres:\n\
   -h,  --help             Affiche ce dialogue\n");
   exit(0);

@@ -1,17 +1,7 @@
 /**
- * @file match_view.c  // TODO: Fill
+ * @file match_view.c
  *
  * @brief Fonctions l'affichage du match.
- *
- * **Description Here**
- *
- * Fonctionnalités :
- * - **Feature Here**
- *
- * Usage:
- * ```
- * **Usage Here**
- * ```
  *
  * @author Marc NGUYEN
  * @author Thomas LARDY
@@ -21,6 +11,7 @@
 #include "match_view.h"
 #include <stdio.h>
 
+/// Affiche la liste de matches et les états.
 void afficherListeMatches(struct ListeMatches* liste_matches) {
   char* state;
 

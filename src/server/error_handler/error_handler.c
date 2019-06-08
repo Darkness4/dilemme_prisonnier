@@ -1,21 +1,15 @@
 /**
- * @file error_handler.c  // TODO: Fill
+ * @file error_handler.c
  *
- * @brief Contient les informations à propos du error_handler.
- *
- * **Description Here**
+ * @brief Raise des EXIT_FAILURE en plus de rajouter des messages.
  *
  * Fonctionnalités :
- * - **Feature Here**
+ * - erreur_IO: exit(1) avec perror
+ * - erreur_pthread_IO: pthread_exit(1) avec perror
+ * - erreur: exit(1) avec print
  *
- * Usage:
- * ```
- * **Usage Here**
- * ```
- *
- * @author Marc NGUYEN
- * @author Thomas LARDY
- * @date 20 Mai 2019
+ * @author P Lalevée ?
+ * @date 2012 ?
  */
 
 #include <pthread.h>

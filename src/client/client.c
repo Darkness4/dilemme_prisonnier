@@ -4,18 +4,21 @@
  */
 
 /**
- * @file client.c  // TODO: Fill
+ * @file client.c
  *
  * @brief Joueur pouvant communiquer avec d'autres clients/serveur.
  *
- * **Description Here**
+ * Connection via IP, Port et Pseudo.
+ *
+ * DNS supporté.
  *
  * Fonctionnalités :
- * - **Feature Here**
+ * - Lecture P2P Client-Serveur
+ * - Ecriture P2P Client-Serveur
  *
  * Usage:
  * ```
- * **Usage Here**
+ * ./client <ip> <port> <pseudo>
  * ```
  *
  * @author Marc NGUYEN
@@ -44,13 +47,15 @@
 #include "ligne/ligne.h"
 #include "resolv/resolv.h"
 
+/// Affiche l'aide.
 static void printHelp(void);
+/// Interrupt signal handler.
 static void intHandler(int sig);
 static int soc;
 static pid_t pid;
 
 /**
- * @brief Description How2use.  // TODO: Fill
+ * @brief Programme principal Client.
  *
  * Executez le programme avec l'argument --help pour connaitre les arguments.
  *
@@ -65,9 +70,15 @@ int main(int argc, char const *argv[]) {
   struct sockaddr_in *adrServ;
   signal(SIGINT, intHandler);
 
-  // Arguments positionnés: adresse serveur + numéro de port + pseudo de
-  // connection
-  if (argc != 4) erreur("usage: %s machine port pseudo\n", argv[0]);
+  if (argc < 2) {
+    printf("ERREUR : Pas assez d'arguments.\n\n");
+    printHelp();
+  }
+  if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) printHelp();
+  if (argc < 4) {
+    printf("ERREUR : Pas assez d'arguments.\n\n");
+    printHelp();
+  }
 
   printf("%s: creating a socket\n", argv[3]);
   soc = socket(AF_INET, SOCK_STREAM, 0);
@@ -121,18 +132,12 @@ int main(int argc, char const *argv[]) {
   return 0;
 }
 
-/**
- * @brief Affiche l'aide.
- *
- */
 static void printHelp(void) {
-  printf(  // TODO: Fill
-      "{TITRE} par Marc NGUYEN et Thomas LARDY en {DATE}\n\
+  printf(
+      "Client pour le Dilemme du Prisonnier Multijoueur par Marc NGUYEN et\n\
+Thomas LARDY en Mai 2019\n\
 \n\
-Usage: {EXECUTABLE} <x> <y> <cote> [options...]\n\n\
-{CATEGORIE} Options:\n\
-  -c,  --commande         {DESCRIPTION}                            [défaut: 100]\n\
-\n\
+Usage: dilemme_prisonnier_client <ip> <port> <pseudo> \n\n\
 Autres:\n\
   -h,  --help             Affiche ce dialogue\n");
   exit(0);
@@ -142,7 +147,7 @@ static void intHandler(int sig) {
   int lgEcr = ecrireLigne(soc, "/quit\n");
   if (lgEcr == -1) erreur_IO("ecrireLigne");
   if (close(soc) == -1) erreur_IO("close socket");
-  printf("Interrupt catched: signal %i\n", sig);
+  printf("Interrupt catched: signal %i\n", WTERMSIG(sig));
   kill(pid, SIGTERM);
   exit(SIGINT);
 }

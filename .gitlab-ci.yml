@@ -58,20 +58,11 @@ test-build-linux:
   - tags
   - gitlab-ci-test
 
-unit-tests-linux:
-  image: alpine:latest
-  stage: test
-  script:
-  - apk add build-base
-  - make tests -j4
-  - find bin/ -type f -exec {} \;
-
 production:
   type: deploy
   dependencies:
     - build-linux
     - pages
-    - unit-tests-linux
   script:
     - echo "0"
   artifacts:
@@ -88,7 +79,6 @@ production-master:
   dependencies:
     - build-linux
     - pages
-    - unit-tests-linux
   script:
     - echo "0"
   artifacts:

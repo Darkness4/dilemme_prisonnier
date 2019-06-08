@@ -1,24 +1,21 @@
 /**
- * @file preparation.c  // TODO: Fill
+ * @file deroulement.c
  *
- * @brief Fonctions permettant la préparation des parties.
+ * @brief Fonctions permettant le déroulement des parties.
  *
- * **Description Here**
+ * Ci-gît le deroulement des parties. Doit être lancé en thread.
  *
- * Fonctionnalités :
- * - **Feature Here**
- *
- * Usage:
- * ```
- * **Usage Here**
- * ```
+ * - Le déroulement se lance dès que tout le monde est PRET1
+ * - Ensuite, la liste de matches est généré avec leur thread.
+ * - On attend la fin des threads.
+ * - Et on finit par affiche le score.
  *
  * @author Marc NGUYEN
  * @author Thomas LARDY
  * @date 20 Mai 2019
  */
 
-#include "preparation.h"
+#include "deroulement.h"
 
 #include <pthread.h>
 #include <stdio.h>
@@ -33,7 +30,13 @@
 static const long SCORE_DEFAULT = 1000000;  // TODO: Move to cfg
 static const char DURATION = 10;
 
-void* preparation(void* val) {
+/**
+ * @brief Deroulement de chaque partie.
+ *
+ * @param val DC datacontext.
+ * @return void* Exit code.
+ */
+void* deroulement(void* val) {
   struct DC* datacontext = (struct DC*)val;
   while (1) {
     while (!sontPretListeJoueurs(datacontext->liste_joueurs)) {
@@ -50,7 +53,6 @@ void* preparation(void* val) {
         sprintf(text, "Serveur> Attendre %i\n", DURATION - i);
         broadcastJoueurs(datacontext->liste_joueurs, text);
         printf("[DEBUG] Attendre %i\n", DURATION - i);
-        // TODO: Texte fin
         sleep(1);
       }
     }

@@ -1,17 +1,7 @@
 /**
- * @file datacontext.c  // TODO: Fill
+ * @file datacontext.c
  *
- * @brief Fonctions utilisées durant la datacontext des parties.
- *
- * **Description Here**
- *
- * Fonctionnalités :
- * - **Feature Here**
- *
- * Usage:
- * ```
- * **Usage Here**
- * ```
+ * @brief Fonctions générant le contexte de données des parties.
  *
  * @author Marc NGUYEN
  * @author Thomas LARDY
@@ -24,18 +14,17 @@
 
 #include "../error_handler/error_handler.h"
 
+/// Sémaphore du thread principal.
 sem_t sem_global;
 
+/**
+ * @brief Créer et initialise le contexte de données global.
+ *
+ * @return struct DC* Datacontext.
+ */
 struct DC* creerDC(void) {
   struct DC* datacontext = (struct DC*)malloc(sizeof(struct DC));
   datacontext->liste_joueurs = creerListeJoueurs();
   datacontext->client_threads = creerClientThreads();
   return datacontext;
 }
-
-// void detruireDC(struct DC* datacontext) {
-//   detruireClientThreads(datacontext->client_threads);
-//   detruireListeJoueurs(datacontext->liste_joueurs);
-//   detruireListeMatch(datacontext->liste_matches);
-//   free(datacontext);
-// }

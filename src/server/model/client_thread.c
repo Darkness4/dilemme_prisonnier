@@ -1,17 +1,10 @@
 /**
- * @file client_thread.c  // TODO: Fill
+ * @file client_thread.c
  *
- * @brief Contient les informations à propos du client_thread.
+ * @brief Fonctions permettant de gérer les clients par threads.
  *
- * **Description Here**
- *
- * Fonctionnalités :
- * - **Feature Here**
- *
- * Usage:
- * ```
- * **Usage Here**
- * ```
+ * Capture les données transmis dans le canal de communication et répond en
+ * adéquation avec le contexte de données.
  *
  * @author Marc NGUYEN
  * @author Thomas LARDY
@@ -31,9 +24,21 @@
 #include "../view/joueur_view.h"
 #include "joueur.h"
 
-static void sessionClient(struct Joueur* joueur);
+/**
+ * @brief Thread Client Handler.
+ *
+ * @param arg Structure Client_Thread.
+ * @return void* Exit code.
+ */
+static void* _threadSessionClient(void* arg);
+/**
+ * @brief Logique du Client Handler.
+ *
+ * @param joueur Structure Joueur.
+ */
+static void _sessionClient(struct Joueur* joueur);
 
-void* threadSessionClient(void* arg) {
+static void* _threadSessionClient(void* arg) {
   struct Client_Thread* client_thread = (struct Client_Thread*)arg;
 
   while (1) {
@@ -41,7 +46,7 @@ void* threadSessionClient(void* arg) {
     client_thread->libre = 0;
     client_thread->joueur->canal = client_thread->canal;
 
-    sessionClient(client_thread->joueur);
+    _sessionClient(client_thread->joueur);
 
     detruireJoueur(client_thread->joueur);
 
@@ -49,9 +54,10 @@ void* threadSessionClient(void* arg) {
 
     client_thread->libre = 1;
   }
+  pthread_exit(NULL);
 }
 
-static void sessionClient(struct Joueur* joueur) {
+static void _sessionClient(struct Joueur* joueur) {
   int lgLue;
   int adversaire_id;
   char ligne_serveur[BUFSIZ];
@@ -192,7 +198,7 @@ static void sessionClient(struct Joueur* joueur) {
 
         } else {
           adversaire_id = !joueur->id_joueur_match;
-          char buf[BUFSIZ];
+          char buf[BUFSIZ + 10];
           if (sprintf(buf, "%s> %s\n", joueur->pseudo, ligne_serveur) <= -1)
             erreur_IO("ecrireLigne");
           lgEcr = ecrireLigne(joueur->match->joueur[adversaire_id]->canal, buf);
@@ -206,25 +212,22 @@ static void sessionClient(struct Joueur* joueur) {
   if (close(joueur->canal) == -1) erreur_IO("fermeture canal");
 }
 
+/**
+ * @brief Génère et initialise les Client_Thread pour chaque Client Handler.
+ *
+ * @return struct Client_Thread** Tableau de Client_Thread. Max: NB_JOUEURS_MAX.
+ */
 struct Client_Thread** creerClientThreads(void) {
   struct Client_Thread** client_threads = (struct Client_Thread**)malloc(
       sizeof(struct Client_Thread*) * NB_JOUEURS_MAX);
   for (int i = 0; i < NB_JOUEURS_MAX; i++) {
     client_threads[i] =
         (struct Client_Thread*)malloc(sizeof(struct Client_Thread));
-    if (pthread_create(&client_threads[i]->thread, NULL, threadSessionClient,
+    if (pthread_create(&client_threads[i]->thread, NULL, _threadSessionClient,
                        client_threads[i]) != 0)
       erreur_IO("pthread_create");
     if (sem_init(&client_threads[i]->sem, 0, 0) == -1) erreur_IO("sem_init");
     client_threads[i]->libre = 1;
   }
   return client_threads;
-}
-
-void detruireClientThreads(struct Client_Thread** client_threads) {
-  for (int i = 0; i < NB_JOUEURS_MAX; i++) {
-    // if (pthread_join(client_threads[i]->thread, NULL) != 0)
-    //   erreur_IO("pthread_join");  // TODO: Afficher message de retour
-    free(client_threads[i]);
-  }
 }

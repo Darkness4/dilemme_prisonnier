@@ -1,17 +1,7 @@
 /**
- * @file joueur_view.c  // TODO: Fill
+ * @file joueur_view.c
  *
  * @brief Fonctions permettant l'affichage des données de joueur.
- *
- * **Description Here**
- *
- * Fonctionnalités :
- * - **Feature Here**
- *
- * Usage:
- * ```
- * **Usage Here**
- * ```
  *
  * @author Marc NGUYEN
  * @author Thomas LARDY
@@ -41,12 +31,14 @@ void afficherScoreListeJoueurs(struct ListeJoueurs* liste_joueurs) {
   }
 }
 
+/// Affiche son propre score à lui-même.
 void afficherScoreJoueur(struct Joueur* joueur) {
   char ligne_client[BUFSIZ];
   sprintf(ligne_client, "%s: %li\n", joueur->pseudo, joueur->score);
   ecrireLigne(joueur->canal, ligne_client);
 }
 
+/// Indique si l'un des joueurs est supérieur à l'autre et vice versa.
 long indicateurNiveauxJoueurs(struct Joueur* joueur1, struct Joueur* joueur2) {
   char ligne_client[BUFSIZ];
   int lgEcr;

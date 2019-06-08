@@ -1,17 +1,14 @@
 /**
- * @file match_thread.c  // TODO: Fill
+ * @file match_thread.c
  *
  * @brief Fonctions permettant le fonctionnement des parties.
  *
- * **Description Here**
+ * Chaque match est géré par un thread.
  *
- * Fonctionnalités :
- * - **Feature Here**
- *
- * Usage:
- * ```
- * **Usage Here**
- * ```
+ * - Le match attend d'abord que les joueurs sont PRET2.
+ * - Il envoie ensuite une notification et attend un /start
+ * - Ensuite se lance la boucle de match.
+ * - Chaque joueur a le choix entre /trahir et /coop.
  *
  * @author Marc NGUYEN
  * @author Thomas LARDY
@@ -32,11 +29,25 @@ static const long SCORE_2COOP = 100000;     // Negatif pour pertes.
 static const long SCORE_2TRAHIR = -200000;  // Negatif pour pertes.
 static const long MAX_ROUND = 5;
 
+/**
+ * @brief Thread du Match
+ *
+ * @param val Pointer vers un Match.
+ * @return void* Return code.
+ */
 static void *_matchThread(void *val);
+/// Vérifie le bon fonctionnement des états lors du match.
 static void _checkJOUE(struct Match *match);
+/// Vérifie le bon fonctionnement des choix lors du match.
 static void _checkCHOIX(struct Match *match);
+/// Envoyer du texte aux deux joueurs du Match.
 static void _printTo2(struct Joueur **joueurs, char *text);
 
+/**
+ * @brief Créer tout les workers pour chaque matches.
+ *
+ * @param liste_matches Pointer vers la liste de matches.
+ */
 void creerMatchWorkers(struct ListeMatches *liste_matches) {
   for (long i = 0; i < liste_matches->nb_matches; i++) {
     if (pthread_create(&liste_matches->matches[i]->pthread_id, NULL,
@@ -45,6 +56,11 @@ void creerMatchWorkers(struct ListeMatches *liste_matches) {
   }
 }
 
+/**
+ * @brief Attends la fin de chaque match.
+ *
+ * @param liste_matches Pointer vers la liste de matches.
+ */
 void joinMatchWorkers(struct ListeMatches *liste_matches) {
   // TODO: Afficher ce que ressorte les threads
   for (long i = 0; i < liste_matches->nb_matches; i++) {

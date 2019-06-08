@@ -8,17 +8,22 @@
 #include "datacontext.h"
 #include "joueur.h"
 
+/// Contexte de données d'un thread Client.
 struct Client_Thread {
+  /// ID du thread
   pthread_t thread;
+  /// Etat du Worker
   char libre;
+  /// Canal de communication
   int canal;
+  /// Protection de données
   sem_t sem;
+  /// Contexte de données d'un Joueur
   struct Joueur* joueur;
+  /// Le pseudo du joueur.
   char pseudo[BUFSIZ];
 };
 
-void* threadSessionClient(void* arg);
 struct Client_Thread** creerClientThreads(void);
-void detruireClientThreads(struct Client_Thread** client_threads);
 
 #endif  // CLIENT_THREAD_H

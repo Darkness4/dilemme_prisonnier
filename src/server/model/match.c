@@ -1,17 +1,7 @@
 /**
- * @file match.c  // TODO: Fill
+ * @file match.c
  *
- * @brief Contient les informations à propos du match.
- *
- * **Description Here**
- *
- * Fonctionnalités :
- * - **Feature Here**
- *
- * Usage:
- * ```
- * **Usage Here**
- * ```
+ * @brief Gère la logique des matches.
  *
  * @author Marc NGUYEN
  * @author Thomas LARDY
@@ -24,16 +14,16 @@
 
 #include "../error_handler/error_handler.h"
 
+/// nombre!
 static long _factorielle(long nombre);
+/// Créer un Match entre deux Joueur.
+static struct Match* _creerMatch(struct Joueur* joueur1,
+                                 struct Joueur* joueur2);
+/// Supprime un Match et libère la mémoire.
+static void _detruireMatch(struct Match* match);
 
-/**
- * @brief Créer un Match entre deux Joueur.
- *
- * @param joueur1
- * @param joueur2
- * @return struct Match* Pointer vers la struct Match.
- */
-struct Match* creerMatch(struct Joueur* joueur1, struct Joueur* joueur2) {
+static struct Match* _creerMatch(struct Joueur* joueur1,
+                                 struct Joueur* joueur2) {
   struct Match* match = (struct Match*)malloc(sizeof(struct Match));
   match->etat = NOT_STARTED;
   match->joueur[0] = joueur1;
@@ -44,12 +34,7 @@ struct Match* creerMatch(struct Joueur* joueur1, struct Joueur* joueur2) {
   return match;
 }
 
-/**
- * @brief Supprime un Match et libère la mémoire.
- *
- * @param match Pointer vers la struct Match.
- */
-void detruireMatch(struct Match* match) {
+static void _detruireMatch(struct Match* match) {
   if (sem_destroy(&match->state_sem) == -1) erreur_IO("sem_destroy");
   free(match);
 }
@@ -110,7 +95,7 @@ struct ListeMatches* creerListeMatch(struct ListeJoueurs* liste_joueurs) {
     pJoueur = copie_liste_joueurs->HEAD;
     while (pJoueur != NULL) {
       joueur2 = trouverJoueurParPseudo(liste_joueurs, pJoueur->pseudo);
-      matches[match] = creerMatch(joueur1, joueur2);
+      matches[match] = _creerMatch(joueur1, joueur2);
       match++;
 
       pJoueur = pJoueur->next;
@@ -128,12 +113,11 @@ struct ListeMatches* creerListeMatch(struct ListeJoueurs* liste_joueurs) {
  */
 void detruireListeMatch(struct ListeMatches* liste_matches) {
   for (long i = 0; i < liste_matches->nb_matches; i++) {
-    detruireMatch(liste_matches->matches[i]);
+    _detruireMatch(liste_matches->matches[i]);
   }
   free(liste_matches);
 }
 
-/// Math: Factorielle
 static long _factorielle(long nombre) {
   long c, fact = 1;
   for (c = 1; c <= nombre; c++) fact = fact * c;

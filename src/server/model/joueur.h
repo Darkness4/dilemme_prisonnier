@@ -23,43 +23,31 @@ enum ChoixJoueur {
 
 /// Données relative au Joueur.
 struct Joueur {
-  /**
-   * @brief Status du Joueur.
-   */
+  /// Status du Joueur.
   enum EtatJoueur etat;
-  /**
-   * @brief Pseudo unique du Joueur
-   */
+  /// Pseudo unique du Joueur
   char* pseudo;
-  /**
-   * @brief Score du Joueur.
-   *
-   * Représente le nombre de points/montant/points de vie du Joueur.
-   */
+  /// Représente le nombre de points/montant/points de vie du Joueur.
   long score;
-  /**
-   * @brief Choix du Joueur durant la partie.
-   */
+  /// Choix du Joueur durant la partie.
   enum ChoixJoueur choix;
-  /**
-   * @brief Joueur suivant;
-   */
+  /// Joueur suivant.
   struct Joueur* next;
-  /**
-   * @brief Joueur precedent;
-   */
+  /// Joueur precedent.
   struct Joueur* prev;
+  /// Match du joueur participant.
   struct Match* match;
-  /// Indice du joueur dans la struct Match
+  /// Indice du joueur dans la struct Match.
   char id_joueur_match;
-  /**
-   * @brief Joueur canal
-   */
+  /// Canal de communication.
   int canal;
 };
 
+/// Liste de joueurs connectés
 struct ListeJoueurs {
+  /// Nombre de joueurs connectés.
   unsigned char nb_joueurs;
+  /// Dernier joueur connecté.
   struct Joueur* HEAD;
 };
 
