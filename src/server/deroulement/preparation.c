@@ -33,7 +33,7 @@
 static const long SCORE_DEFAULT = 1000000;  // TODO: Move to cfg
 static const char DURATION = 10;
 
-void* preparation(void *val) {
+void* preparation(void* val) {
   struct DC* datacontext = (struct DC*)val;
   while (1) {
     while (!sontPretListeJoueurs(datacontext->liste_joueurs)) {
@@ -50,6 +50,7 @@ void* preparation(void *val) {
         sprintf(text, "Serveur> Attendre %i\n", DURATION - i);
         broadcastJoueurs(datacontext->liste_joueurs, text);
         printf("[DEBUG] Attendre %i\n", DURATION - i);
+        // TODO: Texte fin
         sleep(1);
       }
     }
