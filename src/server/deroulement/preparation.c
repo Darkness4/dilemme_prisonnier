@@ -65,6 +65,8 @@ void* preparation(void* val) {
     joinMatchWorkers(datacontext->liste_matches);
 
     // Output
+    broadcastJoueurs(datacontext->liste_joueurs,
+                     "Le jeu est terminé. Merci d'y avoir participé !\n");
     afficherScoreListeJoueurs(datacontext->liste_joueurs);
     setEtatListeJoueurs(datacontext->liste_joueurs, NOT_PRET);
   }

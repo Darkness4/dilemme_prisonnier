@@ -53,6 +53,7 @@ void* threadSessionClient(void* arg) {
 
 static void sessionClient(struct Joueur* joueur) {
   int lgLue;
+  int adversaire_id;
   char ligne_serveur[BUFSIZ];
   int lgEcr = ecrireLigne(
       joueur->canal,
@@ -184,13 +185,23 @@ static void sessionClient(struct Joueur* joueur) {
                 erreur_pthread_IO("sem_post");
           }
 
-        } else
-          broadcastAutreJoueurs(joueur, ligne_serveur);
+          lgEcr =
+              ecrireLigne(joueur->canal, "En attente de l'autre joueur...\n");
+          lgEcr += ecrireLigne(joueur->canal, "CMDS: /trahir /coop /quit\n");
+          if (lgEcr <= -1) erreur_IO("ecrireLigne");
+
+        } else {
+          adversaire_id = !joueur->id_joueur_match;
+          char buf[BUFSIZ];
+          if (sprintf(buf, "%s> %s\n", joueur->pseudo, ligne_serveur) <= -1)
+            erreur_IO("ecrireLigne");
+          lgEcr = ecrireLigne(joueur->match->joueur[adversaire_id]->canal, buf);
+          if (lgEcr <= -1) erreur_IO("ecrireLigne");
+        }
         break;
     }
+    printf("[CHAT] %s> %s\n", joueur->pseudo, ligne_serveur);
   }
-
-  printf("[CHAT] %s> %s\n", joueur->pseudo, ligne_serveur);
 
   if (close(joueur->canal) == -1) erreur_IO("fermeture canal");
 }

@@ -142,7 +142,7 @@ static void intHandler(int sig) {
   int lgEcr = ecrireLigne(soc, "/quit\n");
   if (lgEcr == -1) erreur_IO("ecrireLigne");
   if (close(soc) == -1) erreur_IO("close socket");
-  printf("Interrupt catched: %i", sig);
+  printf("Interrupt catched: signal %i", sig);
   kill(pid, SIGTERM);
   exit(SIGINT);
 }

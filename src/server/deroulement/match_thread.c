@@ -35,6 +35,7 @@ static const long MAX_ROUND = 5;
 static void *_matchThread(void *val);
 static void _checkJOUE(struct Match *match);
 static void _checkCHOIX(struct Match *match);
+static void _printTo2(struct Joueur **joueurs, char *text);
 
 void creerMatchWorkers(struct ListeMatches *liste_matches) {
   for (long i = 0; i < liste_matches->nb_matches; i++) {
@@ -54,6 +55,7 @@ void joinMatchWorkers(struct ListeMatches *liste_matches) {
 
 static void *_matchThread(void *val) {
   struct Match *match = (struct Match *)val;
+  char buf[BUFSIZ];
 
   printf("[DEBUG] %s VS %s: Alive !\n", match->joueur[0]->pseudo,
          match->joueur[1]->pseudo);
@@ -98,16 +100,8 @@ static void *_matchThread(void *val) {
            match->joueur[1]->pseudo, match->round_count);
     printf("[DEBUG] %s VS %s: Waiting for decisions...\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
-    lgEcr = ecrireLigne(match->joueur[0]->canal,
-                        "Souhaitez-vous trahir ou coopérer ?\n");
-    lgEcr +=
-        ecrireLigne(match->joueur[0]->canal, "CMDS: /trahir /coop /quit\n");
-    if (lgEcr <= -1) erreur_IO("ecrireLigne");
-    lgEcr = ecrireLigne(match->joueur[1]->canal,
-                        "Souhaitez-vous trahir ou coopérer ?\n");
-    lgEcr +=
-        ecrireLigne(match->joueur[1]->canal, "CMDS: /trahir /coop /quit\n");
-    if (lgEcr <= -1) erreur_IO("ecrireLigne");
+    _printTo2(match->joueur, "Souhaitez-vous trahir ou coopérer ?\n");
+    _printTo2(match->joueur, "CMDS: /trahir /coop /quit\n");
 
     // Les clients handlers sont en train de travailler...
 
@@ -119,24 +113,33 @@ static void *_matchThread(void *val) {
     _checkCHOIX(match);
     printf("[DEBUG] %s VS %s: Choice has been succefully treated !\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
+
     if (match->joueur[0]->choix == TRAHIR &&
         match->joueur[1]->choix == COOPERER) {
       printf("[DEBUG] %s VS %s: %s a trahi %s!\n", match->joueur[0]->pseudo,
              match->joueur[1]->pseudo, match->joueur[0]->pseudo,
              match->joueur[1]->pseudo);
+      sprintf(buf, "%s a trahi %s!\n", match->joueur[0]->pseudo,
+              match->joueur[1]->pseudo);
+      _printTo2(match->joueur, buf);
     } else if (match->joueur[0]->choix == COOPERER &&
                match->joueur[1]->choix == TRAHIR) {
       printf("[DEBUG] %s VS %s: %s a trahi %s!\n", match->joueur[0]->pseudo,
              match->joueur[1]->pseudo, match->joueur[1]->pseudo,
              match->joueur[0]->pseudo);
+      sprintf(buf, "%s a trahi %s!\n", match->joueur[1]->pseudo,
+              match->joueur[0]->pseudo);
+      _printTo2(match->joueur, buf);
     } else if (match->joueur[0]->choix == COOPERER &&
                match->joueur[1]->choix == COOPERER) {
       printf("[DEBUG] %s VS %s: Une belle coopération entre deux joueurs !\n",
              match->joueur[0]->pseudo, match->joueur[1]->pseudo);
+      _printTo2(match->joueur, "Une belle coopération entre deux joueurs !\n");
     } else if (match->joueur[0]->choix == TRAHIR &&
                match->joueur[1]->choix == TRAHIR) {
       printf("[DEBUG] %s VS %s: Une belle trahison entre deux joueurs !\n",
              match->joueur[0]->pseudo, match->joueur[1]->pseudo);
+      _printTo2(match->joueur, "Une belle trahison entre deux joueurs !\n");
     } else {
       erreur_pthread_IO(
           "Ce message d'erreur ne devrait pas s'afficher si _checkCHOIX "
@@ -157,15 +160,10 @@ static void *_matchThread(void *val) {
   printf("[DEBUG] Fin match !\n");
 
   match->joueur[0]->etat = ATTENTE;
-  lgEcr =
-      ecrireLigne(match->joueur[0]->canal, "/pret pour chercher un match...\n");
-  lgEcr += ecrireLigne(match->joueur[0]->canal, "CMDS: /pret /quit\n");
-  if (lgEcr <= -1) erreur_IO("ecrireLigne");
   match->joueur[1]->etat = ATTENTE;
-  lgEcr =
-      ecrireLigne(match->joueur[1]->canal, "/pret pour chercher un match...\n");
-  lgEcr += ecrireLigne(match->joueur[1]->canal, "CMDS: /pret /quit\n");
-  if (lgEcr <= -1) erreur_IO("ecrireLigne");
+  _printTo2(match->joueur, "/pret pour chercher un match...\n");
+  _printTo2(match->joueur, "CMDS: /pret /quit\n");
+
   match->etat = ENDED;
 
   // Fin de Round
@@ -238,4 +236,11 @@ static void _checkCHOIX(struct Match *match) {
             match->joueur[0]->pseudo, match->joueur[1]->pseudo);
     erreur_pthread_IO(errout);
   }
+}
+
+static void _printTo2(struct Joueur **joueurs, char *text) {
+  int lgEcr = ecrireLigne(joueurs[0]->canal, text);
+  if (lgEcr <= -1) erreur_IO("ecrireLigne");
+  lgEcr = ecrireLigne(joueurs[1]->canal, text);
+  if (lgEcr <= -1) erreur_IO("ecrireLigne");
 }
