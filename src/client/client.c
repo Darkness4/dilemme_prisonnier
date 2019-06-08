@@ -45,7 +45,7 @@
 #include "resolv/resolv.h"
 
 static void printHelp(void);
-static void intHandler(void);
+static void intHandler(int sig);
 static int soc;
 static pid_t pid;
 
@@ -61,7 +61,6 @@ static pid_t pid;
 int main(int argc, char const *argv[]) {
   // Variables
   int ret;
-  int status;
   int lgEcr, lgLue;
   struct sockaddr_in *adrServ;
   signal(SIGINT, intHandler);
@@ -97,7 +96,7 @@ int main(int argc, char const *argv[]) {
     char ligne_client[BUFSIZ];
     while (1) {
       printf("\033[34m%s> \033[0m", argv[3]);
-      gets(ligne_client);
+      fgets(ligne_client, BUFSIZ, stdin);
       lgEcr = ecrireLigne(soc, ligne_client);
       if (lgEcr == -1) erreur_IO("ecrireLigne");
       if (strcmp(ligne_client, "/quit\n") == 0) {
@@ -139,7 +138,7 @@ Autres:\n\
   exit(0);
 }
 
-static void intHandler(void) {
+static void intHandler(int sig) {
   int lgEcr = ecrireLigne(soc, "/quit\n");
   if (lgEcr == -1) erreur_IO("ecrireLigne");
   if (close(soc) == -1) erreur_IO("close socket");
