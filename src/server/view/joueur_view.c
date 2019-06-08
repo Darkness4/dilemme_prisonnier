@@ -19,10 +19,9 @@
  */
 
 #include "joueur_view.h"
-#include "../ligne/ligne.h"
-#include "../error_handler/error_handler.h"
 #include <stdio.h>
-
+#include "../error_handler/error_handler.h"
+#include "../ligne/ligne.h"
 
 /// Affiche le score de tout le monde à tout le monde
 void afficherScoreListeJoueurs(struct ListeJoueurs* liste_joueurs) {
@@ -54,16 +53,22 @@ long indicateurNiveauxJoueurs(struct Joueur* joueur1, struct Joueur* joueur2) {
   if (joueur1->score > joueur2->score) {
     sprintf(ligne_client, "%s est leader.\n", joueur1->pseudo);
     lgEcr = ecrireLigne(joueur1->canal, ligne_client);
-    if(lgEcr == -1) erreur_IO("ecrireLigne");
-    
+    lgEcr += ecrireLigne(joueur2->canal, ligne_client);
+    if (lgEcr <= -1) erreur_IO("ecrireLigne");
+
   } else if (joueur1->score < joueur2->score) {
-    sprintf(ligne_client, "%s est leader.\n", joueur1->pseudo);
+    sprintf(ligne_client, "%s est leader.\n", joueur2->pseudo);
     lgEcr = ecrireLigne(joueur1->canal, ligne_client);
-    if(lgEcr == -1) erreur_IO("ecrireLigne");
+    lgEcr += ecrireLigne(joueur2->canal, ligne_client);
+    if (lgEcr <= -1) erreur_IO("ecrireLigne");
   } else {
-    printf("Les deux joueurs sont au même niveau.\n");
-    lgEcr = ecrireLigne(joueur1->canal, "Les deux joueurs sont au même niveau.\n");
-    if(lgEcr == -1) erreur_IO("ecrireLigne");
+    printf("[DEBUG] %s et %s sont au même niveau.\n", joueur1->pseudo,
+           joueur2->pseudo);
+    lgEcr =
+        ecrireLigne(joueur1->canal, "Les deux joueurs sont au même niveau.\n");
+    lgEcr +=
+        ecrireLigne(joueur2->canal, "Les deux joueurs sont au même niveau.\n");
+    if (lgEcr <= -1) erreur_IO("ecrireLigne");
   }
 
   return joueur1->score - joueur2->score;

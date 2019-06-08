@@ -36,7 +36,8 @@ void afficherListeMatches(struct ListeMatches* liste_matches) {
         state = "ENDED";
         break;
     }
-    printf("%s VS %s: %s\n", liste_matches->matches[i]->joueur[0]->pseudo,
+    printf("[DEBUG THREAD] %s VS %s: %s\n",
+           liste_matches->matches[i]->joueur[0]->pseudo,
            liste_matches->matches[i]->joueur[1]->pseudo, state);
   }
 }

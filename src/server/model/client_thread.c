@@ -70,11 +70,12 @@ static void sessionClient(struct Joueur* joueur) {
       case NOT_PRET:
         if (strcmp(ligne_serveur, "/quit") == 0) {
           broadcastAutreJoueurs(joueur, "/quit\n");
-          printf("%s est ELIMINE\n", joueur->pseudo);
+          printf("[DEBUG STATE] %s est ELIMINE\n", joueur->pseudo);
           joueur->etat = ELIMINE;
 
         } else if (strcmp(ligne_serveur, "/pret") == 0) {
-          printf("%s est PRET1\n", joueur->pseudo);
+          broadcastAutreJoueurs(joueur, "/pret\n");
+          printf("[DEBUG STATE] %s est PRET1\n", joueur->pseudo);
           joueur->etat = PRET1;
           lgEcr = ecrireLigne(joueur->canal, "CMDS: /!pret /quit\n");
           lgEcr += ecrireLigne(joueur->canal,
@@ -87,10 +88,12 @@ static void sessionClient(struct Joueur* joueur) {
       case PRET1:
         if (strcmp(ligne_serveur, "/quit") == 0) {
           broadcastAutreJoueurs(joueur, "/quit\n");
+          printf("[DEBUG STATE] %s est ELIMINE\n", joueur->pseudo);
           joueur->etat = ELIMINE;
 
         } else if (strcmp(ligne_serveur, "/!pret") == 0) {
-          printf("%s est NOT_PRET\n", joueur->pseudo);
+          broadcastAutreJoueurs(joueur, "/!pret\n");
+          printf("[DEBUG STATE] %s est NOT_PRET\n", joueur->pseudo);
           joueur->etat = NOT_PRET;
           lgEcr = ecrireLigne(joueur->canal, "CMDS: /pret /quit\n");
           if (lgEcr <= -1) erreur_IO("ecrireLigne");
@@ -101,10 +104,12 @@ static void sessionClient(struct Joueur* joueur) {
       case PRET2:
         if (strcmp(ligne_serveur, "/quit") == 0) {
           broadcastAutreJoueurs(joueur, "/quit\n");
+          printf("[DEBUG STATE] %s est ELIMINE\n", joueur->pseudo);
           joueur->etat = ELIMINE;
 
         } else if (strcmp(ligne_serveur, "/!pret") == 0) {
-          printf("%s est ATTENTE\n", joueur->pseudo);
+          broadcastAutreJoueurs(joueur, "/!pret\n");
+          printf("[DEBUG STATE] %s est ATTENTE\n", joueur->pseudo);
           joueur->etat = ATTENTE;
           lgEcr =
               ecrireLigne(joueur->canal, "/pret pour chercher un match...\n");
@@ -116,14 +121,14 @@ static void sessionClient(struct Joueur* joueur) {
 
       case DOIT_ACCEPTER:
         if (strcmp(ligne_serveur, "/quit") == 0) {
-          printf("%s est ELIMINE\n", joueur->pseudo);
           broadcastAutreJoueurs(joueur, "/quit\n");
+          printf("[DEBUG STATE] %s est ELIMINE\n", joueur->pseudo);
           joueur->etat = ELIMINE;
           if (sem_post(&joueur->match->state_sem) != 0)
             erreur_pthread_IO("sem_post");
 
         } else if (strcmp(ligne_serveur, "/start") == 0) {
-          printf("%s est START\n", joueur->pseudo);
+          printf("[DEBUG STATE] %s est START\n", joueur->pseudo);
           joueur->etat = JOUE;
           if (sem_post(&joueur->match->state_sem) != 0)
             erreur_pthread_IO("sem_post");
@@ -136,12 +141,13 @@ static void sessionClient(struct Joueur* joueur) {
 
       case ATTENTE:
         if (strcmp(ligne_serveur, "/quit") == 0) {
-          printf("%s est ELIMINE\n", joueur->pseudo);
           broadcastAutreJoueurs(joueur, "/quit\n");
+          printf("[DEBUG STATE] %s est ELIMINE\n", joueur->pseudo);
           joueur->etat = ELIMINE;
 
         } else if (strcmp(ligne_serveur, "/pret") == 0) {
-          printf("%s est PRET2\n", joueur->pseudo);
+          broadcastAutreJoueurs(joueur, "/pret\n");
+          printf("[DEBUG STATE] %s est PRET2\n", joueur->pseudo);
           joueur->etat = PRET2;
           lgEcr = ecrireLigne(joueur->canal, "CMDS: /!pret /quit\n");
           if (lgEcr <= -1) erreur_IO("ecrireLigne");
@@ -154,32 +160,37 @@ static void sessionClient(struct Joueur* joueur) {
 
       case JOUE:
         if (strcmp(ligne_serveur, "/quit") == 0) {
-          printf("%s est ELIMINE\n", joueur->pseudo);
           broadcastAutreJoueurs(joueur, "/quit\n");
-          if (sem_post(&joueur->match->state_sem) != 0)
-            erreur_pthread_IO("sem_post");
+          printf("[DEBUG STATE] %s est ELIMINE\n", joueur->pseudo);
           joueur->etat = ELIMINE;
+          if (sem_destroy(&joueur->match->state_sem) != 0)
+            erreur_pthread_IO("sem_destroy");
 
         } else if (strcmp(ligne_serveur, "/trahir") == 0) {
-          printf("%s est TRAHIR\n", joueur->pseudo);
-          joueur->choix = TRAHIR;
-          if (joueur->choix != TRAHIR && joueur->choix != COOPERER)
-            if (sem_post(&joueur->match->state_sem) != 0)
-              erreur_pthread_IO("sem_post");
+          printf("[DEBUG STATE] %s est TRAHIR\n", joueur->pseudo);
+          if (joueur->choix != TRAHIR) {
+            joueur->choix = TRAHIR;
+            if (joueur->choix != COOPERER)
+              if (sem_post(&joueur->match->state_sem) != 0)
+                erreur_pthread_IO("sem_post");
+          }
 
         } else if (strcmp(ligne_serveur, "/coop") == 0) {
-          printf("%s est COOPERER\n", joueur->pseudo);
-          joueur->choix = COOPERER;
-          if (joueur->choix != TRAHIR && joueur->choix != COOPERER)
-            if (sem_post(&joueur->match->state_sem) != 0)
-              erreur_pthread_IO("sem_post");
+          printf("[DEBUG STATE] %s est COOPERER\n", joueur->pseudo);
+          if (joueur->choix != COOPERER) {
+            joueur->choix = COOPERER;
+            if (joueur->choix != TRAHIR)
+              if (sem_post(&joueur->match->state_sem) != 0)
+                erreur_pthread_IO("sem_post");
+          }
+
         } else
           broadcastAutreJoueurs(joueur, ligne_serveur);
         break;
     }
   }
 
-  printf("%s> %s\n", joueur->pseudo, ligne_serveur);
+  printf("[CHAT] %s> %s\n", joueur->pseudo, ligne_serveur);
 
   if (close(joueur->canal) == -1) erreur_IO("fermeture canal");
 }
