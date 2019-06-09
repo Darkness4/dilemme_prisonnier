@@ -264,7 +264,7 @@ void broadcastAutreJoueurs(struct Joueur* joueur, char* texte) {
     ecrireLigne(joueurGauche->canal, texte_final);
     joueurGauche = joueurGauche->prev;
   }
-  printf("[BROADCAST] Complete\n");
+  // printf("[BROADCAST] Complete\n");
 }
 
 /**

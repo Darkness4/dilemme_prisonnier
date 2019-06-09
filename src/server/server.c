@@ -46,14 +46,11 @@
 #include "model/datacontext.h"
 #include "resolv/resolv.h"
 
-#define FAUX 0
-#define VRAI 1
-
-void creerClientThread(struct Client_Thread** client_threads);
-struct Client_Thread* chercherWorkerLibre(struct Client_Thread**);
+static struct Client_Thread* _chercherWorkerLibre(
+    struct Client_Thread** client_threads);
 
 /// Affiche l'aide
-static void printHelp(void);
+static void _printHelp(void);
 
 /**
  * @brief Programme principal Serveur.
@@ -78,9 +75,9 @@ int main(int argc, char const* argv[]) {
   // Arguments positionnés
   if (argc < 2) {
     printf("ERREUR : Pas assez d'arguments.\n\n");
-    printHelp();
+    _printHelp();
   }
-  if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) printHelp();
+  if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) _printHelp();
 
   port = (short)atoi(argv[1]);
 
@@ -94,12 +91,13 @@ int main(int argc, char const* argv[]) {
   printf("Server: binding to INADDR_ANY address on port %d\n", port);
   ret = bind(soc, (struct sockaddr*)&adrEcoute, sizeof(adrEcoute));
   if (ret < 0) erreur_IO("bind");
+
   printf("Server: listening to socket\n");
-  ret = listen(soc, 23);
+  ret = listen(soc, NB_JOUEURS_MAX - 1);
   if (ret < 0) erreur_IO("listen");
 
   while (1) {
-    sem_wait(&sem_global);
+    printf("Server: accepting a connection\n");
     canal = accept(soc, (struct sockaddr*)&adrClient, &lgAdrClient);
     if (canal < 0) erreur_IO("accept");
 
@@ -107,33 +105,40 @@ int main(int argc, char const* argv[]) {
            stringIP(ntohl(adrClient.sin_addr.s_addr)),
            ntohs(adrClient.sin_port));
 
-    while ((thread_libre = chercherWorkerLibre(datacontext->client_threads)) ==
-           NULL)
-      usleep(1);
+    char pseudo[BUFSIZ];
+    if (lireLigne(canal, pseudo) < 0) erreur_IO("lireLigne");
+    if (trouverJoueurParPseudo(datacontext->liste_joueurs, pseudo) != NULL) {
+      printf("Server: Connection refused. Pseudo aleady in use.\n");
+      ecrireLigne(canal,
+                  "Connexion refusée. Veuillez choisir un autre pseudo.\n");
+      close(canal);
+      continue;  // Skip ahead
+    }
+
+    if (sem_wait(&sem_global) != 0) erreur_IO("sem_wait");
+    thread_libre = _chercherWorkerLibre(datacontext->client_threads);
     thread_libre->canal = canal;
-    if (lireLigne(canal, thread_libre->pseudo) < 0) erreur_IO("lireLigne");
+    strcpy(thread_libre->pseudo, pseudo);
     thread_libre->joueur = creerJoueur(thread_libre->pseudo);
     ajouterJoueur(datacontext->liste_joueurs, thread_libre->joueur);
-    sem_post(&(thread_libre->sem));
+    if (sem_post(&thread_libre->sem) != 0) erreur_IO("sem_post");
   }
   if (close(soc) == -1) erreur_IO("fermeture ecoute");
 
   return 0;
 }
 
-/// retourne le numero du worker libre ou -1 si pas de worker libre
-struct Client_Thread* chercherWorkerLibre(
+/// Retourne le contexte de données du woker libre. Sinon NULL.
+static struct Client_Thread* _chercherWorkerLibre(
     struct Client_Thread** client_threads) {
-  int i = 0;
-  while (client_threads[i]->libre == 0 && i < NB_JOUEURS_MAX) i++;
-  if (i < NB_JOUEURS_MAX)
-    return client_threads[i];
-  else
-    return NULL;
+  for (int i = 0; i < NB_JOUEURS_MAX; i++) {
+    if (client_threads[i]->libre == 1) return client_threads[i];
+  }
+  return NULL;
 }
 
-static void printHelp(void) {
-  printf(  // TODO: Fill
+static void _printHelp(void) {
+  printf(
       "Serveur pour le Dilemme du Prisonnier Multijoueur par Marc NGUYEN et\n\
 Thomas LARDY en Mai 2019\n\
 \n\
