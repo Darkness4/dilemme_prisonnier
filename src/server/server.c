@@ -4,18 +4,28 @@
  */
 
 /**
- * @file server.c  // TODO: Fill
+ * @file server.c
  *
  * @brief Serveur/Jeu gérant la progression d'un jeu.
  *
- * **Description Here**
+ * Jeu du dilemme du prisonnier multijoueur.
  *
- * Fonctionnalités :
- * - **Feature Here**
+ * Etats :
+ *
+ * - Connection
+ * - NOT_PRET automatiquement
+ * - PRET1 via /pret
+ * - ATTENTE automatiquement
+ * - PRET2 via /pret
+ * - DOIT_ACCEPTER automatiquement
+ * - JOUE via /start
+ * - ATTENTE automatiquement
+ * - ELIMINE via /quit
+ * - Deconnection
  *
  * Usage:
  * ```
- * **Usage Here**
+ * dilemme_prisonnier_server <port>
  * ```
  *
  * @author Marc NGUYEN

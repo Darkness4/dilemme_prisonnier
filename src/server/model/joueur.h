@@ -5,6 +5,7 @@
 
 #include <semaphore.h>
 
+/// Etat d'un Joueur
 enum EtatJoueur {
   NOT_PRET,
   PRET1,
@@ -15,6 +16,7 @@ enum EtatJoueur {
   ELIMINE,
 };
 
+// Choix d'un Joueur
 enum ChoixJoueur {
   RIEN,
   COOPERER,
