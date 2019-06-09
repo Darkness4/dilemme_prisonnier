@@ -1,5 +1,5 @@
 /**
- * @file error_handler.c
+ * @file client/error_handler/error_handler.c
  *
  * @brief Raise des EXIT_FAILURE en plus de rajouter des messages.
  *

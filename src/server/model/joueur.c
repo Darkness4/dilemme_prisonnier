@@ -270,7 +270,7 @@ void broadcastAutreJoueurs(struct Joueur* joueur, char* texte) {
 /**
  * @brief Transmet un texte à tous les joueurs
  *
- * @param joueur Pointeur vers la structure joueur
+ * @param liste_joueurs Pointeur vers la liste de Joueurs
  * @param texte Chaine de caractère
  */
 void broadcastJoueurs(struct ListeJoueurs* liste_joueurs, char* texte) {
