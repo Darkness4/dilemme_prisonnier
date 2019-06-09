@@ -21,13 +21,8 @@
 
 #include "../error_handler/error_handler.h"
 #include "../ligne/ligne.h"
+#include "../model/datacontext.h"
 #include "../view/joueur_view.h"
-
-// TODO: Move to cfg
-static const long SCORE_TC = 400000;        // Trahir = Negatif pour pertes.
-static const long SCORE_2COOP = 100000;     // Negatif pour pertes.
-static const long SCORE_2TRAHIR = -200000;  // Negatif pour pertes.
-static const long MAX_ROUND = 5;
 
 /// Thread d'un match
 static void *_matchThread(void *val);
@@ -106,7 +101,7 @@ static void *_matchThread(void *val) {
 
   match->etat = STARTED;
 
-  while (match->round_count < MAX_ROUND) {
+  while (match->round_count < CONFIG.MAX_ROUND) {
     printf("[DEBUG] %s VS %s: Round %i start !\n", match->joueur[0]->pseudo,
            match->joueur[1]->pseudo, match->round_count);
     printf("[DEBUG] %s VS %s: Waiting for decisions...\n",
@@ -227,20 +222,20 @@ static void _checkJOUE(struct Match *match) {
 
 static void _checkCHOIX(struct Match *match) {
   if (match->joueur[0]->choix == TRAHIR && match->joueur[1]->choix == TRAHIR) {
-    match->joueur[0]->score += SCORE_2TRAHIR;
-    match->joueur[1]->score += SCORE_2TRAHIR;
+    match->joueur[0]->score += CONFIG.SCORE_2TRAHIR;
+    match->joueur[1]->score += CONFIG.SCORE_2TRAHIR;
   } else if (match->joueur[0]->choix == COOPERER &&
              match->joueur[1]->choix == TRAHIR) {
-    match->joueur[0]->score -= SCORE_TC;
-    match->joueur[1]->score += SCORE_TC;
+    match->joueur[0]->score -= CONFIG.SCORE_TC;
+    match->joueur[1]->score += CONFIG.SCORE_TC;
   } else if (match->joueur[0]->choix == TRAHIR &&
              match->joueur[1]->choix == COOPERER) {
-    match->joueur[0]->score += SCORE_TC;
-    match->joueur[1]->score -= SCORE_TC;
+    match->joueur[0]->score += CONFIG.SCORE_TC;
+    match->joueur[1]->score -= CONFIG.SCORE_TC;
   } else if (match->joueur[0]->choix == COOPERER &&
              match->joueur[1]->choix == COOPERER) {
-    match->joueur[0]->score += SCORE_2COOP;
-    match->joueur[1]->score += SCORE_2COOP;
+    match->joueur[0]->score += CONFIG.SCORE_2COOP;
+    match->joueur[1]->score += CONFIG.SCORE_2COOP;
   } else {
     char errout[100];
     sprintf(errout, "Le match %s VS %s a reçu un choix inattendu !\n",

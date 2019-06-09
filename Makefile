@@ -26,12 +26,17 @@ OBJECTS_SERVER := $(SOURCES_SERVER:$(SRCDIR)/server/%.c=$(OBJDIR)/server/%.o)
 # Cleaner
 rm = rm -rf
 
-executable: $(BINDIR)/$(TARGET_CLIENT) $(BINDIR)/$(TARGET_SERVER)
+all: $(BINDIR)/$(TARGET_CLIENT) $(BINDIR)/$(TARGET_SERVER) cfg
 
-all: $(BINDIR)/$(TARGET_CLIENT) $(BINDIR)/$(TARGET_SERVER)
+executable: $(BINDIR)/$(TARGET_CLIENT) $(BINDIR)/$(TARGET_SERVER)
 
 debug: CFLAGS += -g
 debug: all
+
+cfg: server.properties
+
+server.properties:
+	@sh ./scripts/generate-config.sh
 
 # Link
 $(BINDIR)/$(TARGET_CLIENT): $(OBJECTS_CLIENT)

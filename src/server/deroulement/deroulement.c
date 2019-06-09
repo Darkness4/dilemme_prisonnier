@@ -27,9 +27,6 @@
 #include "../view/match_view.h"
 #include "match_thread.h"
 
-static const long SCORE_DEFAULT = 1000000;  // TODO: Move to cfg
-static const char DURATION = 10;
-
 /**
  * @brief Deroulement de chaque partie.
  *
@@ -43,16 +40,16 @@ void* deroulement(void* val) {
       while (!sontPretListeJoueurs(datacontext->liste_joueurs)) continue;
 
       datacontext->liste_matches = creerListeMatch(datacontext->liste_joueurs);
-      setScoreListeJoueurs(datacontext->liste_joueurs, SCORE_DEFAULT);
-      for (char i = 0; i < DURATION; i++) {  // Wait 10s
+      setScoreListeJoueurs(datacontext->liste_joueurs, CONFIG.SCORE_DEFAULT);
+      for (char i = 0; i < CONFIG.DURATION; i++) {  // Wait 10s
         if (!sontPretListeJoueurs(datacontext->liste_joueurs)) {
           detruireListeMatch(datacontext->liste_matches);
           break;  // Fail
         }
         char text[BUFSIZ];
-        sprintf(text, "Serveur> Attendre %i\n", DURATION - i);
+        sprintf(text, "Serveur> Attendre %li\n", CONFIG.DURATION - i);
         broadcastJoueurs(datacontext->liste_joueurs, text);
-        printf("[DEBUG] Attendre %i\n", DURATION - i);
+        printf("[DEBUG] Attendre %li\n", CONFIG.DURATION - i);
         sleep(1);
       }
     }

@@ -2,10 +2,14 @@
 #define DATACONTEXT_H
 
 #include "client_thread.h"
+#include "configuration.h"
 #include "match.h"
 
 /// Sémaphore du thread principal.
-extern sem_t sem_global;
+sem_t sem_global;
+
+/// Configuration file
+struct Config CONFIG;
 
 /// Contexte de donnnées global.
 struct DC {

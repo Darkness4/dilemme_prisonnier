@@ -14,9 +14,6 @@
 
 #include "../error_handler/error_handler.h"
 
-/// Sémaphore du thread principal.
-sem_t sem_global;
-
 /**
  * @brief Créer et initialise le contexte de données global.
  *

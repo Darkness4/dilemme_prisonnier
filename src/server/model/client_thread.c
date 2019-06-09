@@ -219,8 +219,8 @@ static void _sessionClient(struct Joueur* joueur) {
  */
 struct Client_Thread** creerClientThreads(void) {
   struct Client_Thread** client_threads = (struct Client_Thread**)malloc(
-      sizeof(struct Client_Thread*) * NB_JOUEURS_MAX);
-  for (int i = 0; i < NB_JOUEURS_MAX; i++) {
+      sizeof(struct Client_Thread*) * CONFIG.NB_JOUEURS_MAX);
+  for (int i = 0; i < CONFIG.NB_JOUEURS_MAX; i++) {
     client_threads[i] =
         (struct Client_Thread*)malloc(sizeof(struct Client_Thread));
     if (pthread_create(&client_threads[i]->thread, NULL, _threadSessionClient,

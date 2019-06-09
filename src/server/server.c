@@ -73,6 +73,7 @@ static void _printHelp(void);
  * @return int exit(0)
  */
 int main(int argc, char const* argv[]) {
+  CONFIG = lireConfig();
   int soc, ret, canal;
   short port;
   struct sockaddr_in adrEcoute, adrClient;
@@ -81,7 +82,8 @@ int main(int argc, char const* argv[]) {
   struct DC* datacontext = creerDC();
   pthread_t partie;
   pthread_create(&partie, NULL, deroulement, datacontext);
-  if (sem_init(&sem_global, 0, NB_JOUEURS_MAX) == -1) erreur_IO("sem_init");
+  if (sem_init(&sem_global, 0, CONFIG.NB_JOUEURS_MAX) == -1)
+    erreur_IO("sem_init");
 
   // Arguments positionnés
   if (argc < 2) {
@@ -104,7 +106,7 @@ int main(int argc, char const* argv[]) {
   if (ret < 0) erreur_IO("bind");
 
   printf("Server: listening to socket\n");
-  ret = listen(soc, NB_JOUEURS_MAX - 1);
+  ret = listen(soc, CONFIG.NB_JOUEURS_MAX - 1);
   if (ret < 0) erreur_IO("listen");
 
   while (1) {
@@ -142,7 +144,7 @@ int main(int argc, char const* argv[]) {
 /// Retourne le contexte de données du woker libre. Sinon NULL.
 static struct Client_Thread* _chercherWorkerLibre(
     struct Client_Thread** client_threads) {
-  for (int i = 0; i < NB_JOUEURS_MAX; i++) {
+  for (int i = 0; i < CONFIG.NB_JOUEURS_MAX; i++) {
     if (client_threads[i]->libre == 1) return client_threads[i];
   }
   return NULL;

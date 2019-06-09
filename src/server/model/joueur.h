@@ -1,8 +1,6 @@
 #if !defined(JOUEUR_H)
 #define JOUEUR_H
 
-#define NB_JOUEURS_MAX 24
-
 /// Etat d'un Joueur
 enum EtatJoueur {
   NOT_PRET,
