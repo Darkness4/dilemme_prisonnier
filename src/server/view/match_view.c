@@ -9,6 +9,7 @@
  */
 
 #include "match_view.h"
+
 #include <stdio.h>
 
 /// Affiche la liste de matches et les états.

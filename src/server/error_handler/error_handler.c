@@ -12,12 +12,12 @@
  * @date 2012 ?
  */
 
+#include "error_handler.h"
+
 #include <pthread.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "error_handler.h"
 
 void erreur_IO(const char *message) {
   perror(message);

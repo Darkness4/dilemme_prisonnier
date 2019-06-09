@@ -5,7 +5,6 @@
 #include <semaphore.h>
 #include <stdio.h>
 
-#include "datacontext.h"
 #include "joueur.h"
 
 /// Contexte de données d'un thread Client.

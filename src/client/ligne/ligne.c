@@ -3,6 +3,7 @@
    (c) P Lalevée, 2012 */
 
 #include "ligne.h"
+
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>

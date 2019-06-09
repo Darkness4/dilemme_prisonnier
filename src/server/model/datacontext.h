@@ -2,7 +2,6 @@
 #define DATACONTEXT_H
 
 #include "client_thread.h"
-#include "joueur.h"
 #include "match.h"
 
 /// Sémaphore du thread principal.

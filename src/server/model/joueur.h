@@ -3,8 +3,6 @@
 
 #define NB_JOUEURS_MAX 24
 
-#include <semaphore.h>
-
 /// Etat d'un Joueur
 enum EtatJoueur {
   NOT_PRET,

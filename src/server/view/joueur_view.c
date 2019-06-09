@@ -9,7 +9,9 @@
  */
 
 #include "joueur_view.h"
+
 #include <stdio.h>
+
 #include "../error_handler/error_handler.h"
 #include "../ligne/ligne.h"
 
