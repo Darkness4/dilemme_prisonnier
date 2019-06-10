@@ -44,6 +44,7 @@ void* deroulement(void* val) {
       for (char i = 0; i < CONFIG.DURATION; i++) {  // Wait 10s
         if (!sontPretListeJoueurs(datacontext->liste_joueurs)) {
           detruireListeMatch(datacontext->liste_matches);
+          datacontext->liste_matches = NULL;
           break;  // Fail
         }
         char text[BUFSIZ];
@@ -62,6 +63,7 @@ void* deroulement(void* val) {
 
     // Traitement
     joinMatchWorkers(datacontext->liste_matches);
+    datacontext->liste_matches = NULL;
 
     // Output
     broadcastJoueurs(datacontext->liste_joueurs,

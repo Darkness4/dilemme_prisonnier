@@ -118,6 +118,15 @@ int main(int argc, char const* argv[]) {
            stringIP(ntohl(adrClient.sin_addr.s_addr)),
            ntohs(adrClient.sin_port));
 
+    // Refuse la connection si jeu en cours
+    if (datacontext->liste_matches != NULL) {
+      printf("Server: Connection refused. Game is running.\n");
+      ecrireLigne(canal, "Connexion refusée. Une partie est en cours.\n");
+      close(canal);
+      continue;
+    }
+
+    // Refuse la connection si pseudo existant
     char pseudo[BUFSIZ];
     if (lireLigne(canal, pseudo) < 0) erreur_IO("lireLigne");
     if (trouverJoueurParPseudo(datacontext->liste_joueurs, pseudo) != NULL) {
@@ -126,12 +135,6 @@ int main(int argc, char const* argv[]) {
                   "Connexion refusée. Veuillez choisir un autre pseudo.\n");
       close(canal);
       continue;  // Skip ahead
-    }
-    if (datacontext->liste_matches != NULL) {
-      printf("Server: Connection refused. Game is running.\n");
-      ecrireLigne(canal, "Connexion refusée. Une partie est en cours.\n");
-      close(canal);
-      continue;
     }
 
     if (sem_wait(&sem_global) != 0) erreur_IO("sem_wait");

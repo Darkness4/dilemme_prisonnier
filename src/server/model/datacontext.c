@@ -23,5 +23,6 @@ struct DC* creerDC(void) {
   struct DC* datacontext = (struct DC*)malloc(sizeof(struct DC));
   datacontext->liste_joueurs = creerListeJoueurs();
   datacontext->client_threads = creerClientThreads();
+  datacontext->liste_matches = NULL;
   return datacontext;
 }
