@@ -127,7 +127,7 @@ int main(int argc, char const* argv[]) {
       close(canal);
       continue;  // Skip ahead
     }
-    if (datacontext->liste_matches == NULL) {
+    if (datacontext->liste_matches != NULL) {
       printf("Server: Connection refused. Game is running.\n");
       ecrireLigne(canal, "Connexion refusée. Une partie est en cours.\n");
       close(canal);
