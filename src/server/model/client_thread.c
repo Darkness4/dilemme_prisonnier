@@ -65,6 +65,9 @@ static void _sessionClient(struct Joueur* joueur) {
       joueur->canal,
       "Bienvenue sur le jeu du Dilemme du Prisonnier Multijoueur\n");
   lgEcr += ecrireLigne(joueur->canal, "CMDS: /pret /quit\n");
+  lgEcr += ecrireLigne(
+      joueur->canal,
+      "Entrez /pret lorsque tous les joueurs ont rejoint le serveur\n");
   if (lgEcr <= -1) erreur_IO("ecrireLigne");
   broadcastAutreJoueurs(joueur, "s'est connecté.\n");
 
