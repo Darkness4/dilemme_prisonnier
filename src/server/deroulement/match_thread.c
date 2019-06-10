@@ -18,6 +18,7 @@
 #include "match_thread.h"
 
 #include <stdio.h>
+#include <unistd.h>
 
 #include "../error_handler/error_handler.h"
 #include "../ligne/ligne.h"
@@ -27,7 +28,7 @@
 /// Thread d'un match
 static void *_matchThread(void *val);
 /// Vérifie le bon fonctionnement des états lors du match.
-static void _checkJOUE(struct Match *match);
+static void _checkELIMINE(struct Match *match);
 /// Vérifie le bon fonctionnement des choix lors du match.
 static void _checkCHOIX(struct Match *match);
 /// Envoyer du texte aux deux joueurs du Match.
@@ -64,12 +65,13 @@ static void *_matchThread(void *val) {
   struct Match *match = (struct Match *)val;
   char buf[BUFSIZ];
 
-  printf("[DEBUG] %s VS %s: Alive !\n", match->joueur[0]->pseudo,
+  printf("[DEBUG THREAD] %s VS %s: Alive !\n", match->joueur[0]->pseudo,
          match->joueur[1]->pseudo);
 
   // Le producteur est désormais Match
-  while (match->joueur[0]->etat != PRET2 || match->joueur[1]->etat != PRET2)
-    continue;
+  while (match->joueur[0]->etat != PRET2 || match->joueur[1]->etat != PRET2) {
+    _checkELIMINE(match);
+  }
 
   match->joueur[0]->etat = DOIT_ACCEPTER;
   match->joueur[1]->etat = DOIT_ACCEPTER;
@@ -85,7 +87,7 @@ static void *_matchThread(void *val) {
   lgEcr += ecrireLigne(match->joueur[1]->canal, "CMDS: /start /quit\n");
   if (lgEcr <= -1) erreur_IO("ecrireLigne");
 
-  printf("[DEBUG] %s VS %s: Les joueurs doivent accepter !\n",
+  printf("[DEBUG THREAD] %s VS %s: Les joueurs doivent accepter !\n",
          match->joueur[0]->pseudo, match->joueur[1]->pseudo);
 
   // Attend que les clients ont terminées (ecrire "/start" ou "/quit")
@@ -93,19 +95,20 @@ static void *_matchThread(void *val) {
   if (sem_wait(&match->state_sem) != 0) erreur_pthread_IO("sem_wait");
   if (sem_wait(&match->state_sem) != 0) erreur_pthread_IO("sem_wait");
 
-  _checkJOUE(match);
+  _checkELIMINE(match);
 
-  printf("[DEBUG] %s VS %s: /start received !\n", match->joueur[0]->pseudo,
-         match->joueur[1]->pseudo);
+  printf("[DEBUG THREAD] %s VS %s: /start received !\n",
+         match->joueur[0]->pseudo, match->joueur[1]->pseudo);
 
   indicateurNiveauxJoueurs(match->joueur[0], match->joueur[1]);
 
   match->etat = STARTED;
 
   while (match->round_count < CONFIG.MAX_ROUND) {
-    printf("[DEBUG] %s VS %s: Round %i start !\n", match->joueur[0]->pseudo,
-           match->joueur[1]->pseudo, match->round_count);
-    printf("[DEBUG] %s VS %s: Waiting for decisions...\n",
+    printf("[DEBUG THREAD] %s VS %s: Round %i start !\n",
+           match->joueur[0]->pseudo, match->joueur[1]->pseudo,
+           match->round_count);
+    printf("[DEBUG THREAD] %s VS %s: Waiting for decisions...\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
     _printTo2(match->joueur, "Souhaitez-vous trahir ou coopérer ?\n");
     _printTo2(match->joueur, "CMDS: /trahir /coop /quit\n");
@@ -116,36 +119,39 @@ static void *_matchThread(void *val) {
     if (sem_wait(&match->state_sem) != 0) erreur_pthread_IO("sem_wait");
     if (sem_wait(&match->state_sem) != 0) erreur_pthread_IO("sem_wait");
 
-    _checkJOUE(match);
+    _checkELIMINE(match);
     _checkCHOIX(match);
-    printf("[DEBUG] %s VS %s: Choice has been succefully treated !\n",
+    printf("[DEBUG THREAD] %s VS %s: Choice has been succefully treated !\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
 
     if (match->joueur[0]->choix == TRAHIR &&
         match->joueur[1]->choix == COOPERER) {
-      printf("[DEBUG] %s VS %s: %s a trahi %s!\n", match->joueur[0]->pseudo,
-             match->joueur[1]->pseudo, match->joueur[0]->pseudo,
-             match->joueur[1]->pseudo);
+      printf("[DEBUG THREAD] %s VS %s: %s a trahi %s!\n",
+             match->joueur[0]->pseudo, match->joueur[1]->pseudo,
+             match->joueur[0]->pseudo, match->joueur[1]->pseudo);
       sprintf(buf, "%s a trahi %s!\n", match->joueur[0]->pseudo,
               match->joueur[1]->pseudo);
       _printTo2(match->joueur, buf);
     } else if (match->joueur[0]->choix == COOPERER &&
                match->joueur[1]->choix == TRAHIR) {
-      printf("[DEBUG] %s VS %s: %s a trahi %s!\n", match->joueur[0]->pseudo,
-             match->joueur[1]->pseudo, match->joueur[1]->pseudo,
-             match->joueur[0]->pseudo);
+      printf("[DEBUG THREAD] %s VS %s: %s a trahi %s!\n",
+             match->joueur[0]->pseudo, match->joueur[1]->pseudo,
+             match->joueur[1]->pseudo, match->joueur[0]->pseudo);
       sprintf(buf, "%s a trahi %s!\n", match->joueur[1]->pseudo,
               match->joueur[0]->pseudo);
       _printTo2(match->joueur, buf);
     } else if (match->joueur[0]->choix == COOPERER &&
                match->joueur[1]->choix == COOPERER) {
-      printf("[DEBUG] %s VS %s: Une belle coopération entre deux joueurs !\n",
-             match->joueur[0]->pseudo, match->joueur[1]->pseudo);
+      printf(
+          "[DEBUG THREAD] %s VS %s: Une belle coopération entre deux joueurs "
+          "!\n",
+          match->joueur[0]->pseudo, match->joueur[1]->pseudo);
       _printTo2(match->joueur, "Une belle coopération entre deux joueurs !\n");
     } else if (match->joueur[0]->choix == TRAHIR &&
                match->joueur[1]->choix == TRAHIR) {
-      printf("[DEBUG] %s VS %s: Une belle trahison entre deux joueurs !\n",
-             match->joueur[0]->pseudo, match->joueur[1]->pseudo);
+      printf(
+          "[DEBUG THREAD] %s VS %s: Une belle trahison entre deux joueurs !\n",
+          match->joueur[0]->pseudo, match->joueur[1]->pseudo);
       _printTo2(match->joueur, "Une belle trahison entre deux joueurs !\n");
     } else {
       erreur_pthread_IO(
@@ -156,8 +162,9 @@ static void *_matchThread(void *val) {
     match->joueur[0]->choix = RIEN;
     match->joueur[1]->choix = RIEN;
 
-    printf("[DEBUG] %s VS %s: Round %i ended !\n", match->joueur[0]->pseudo,
-           match->joueur[1]->pseudo, match->round_count);
+    printf("[DEBUG THREAD] %s VS %s: Round %i ended !\n",
+           match->joueur[0]->pseudo, match->joueur[1]->pseudo,
+           match->round_count);
 
     afficherScoreJoueur(match->joueur[0]);
     afficherScoreJoueur(match->joueur[1]);
@@ -174,26 +181,28 @@ static void *_matchThread(void *val) {
   match->etat = ENDED;
 
   // Fin de Round
-  printf("[DEBUG] Thread %s VS %s is now dead !\n", match->joueur[0]->pseudo,
-         match->joueur[1]->pseudo);
+  printf("[DEBUG THREAD] Thread %s VS %s is now dead !\n",
+         match->joueur[0]->pseudo, match->joueur[1]->pseudo);
 
   sem_destroy(&match->state_sem);
   pthread_exit(NULL);
 }
 
-static void _checkJOUE(struct Match *match) {
-  if (match->joueur[0]->etat == ELIMINE && match->joueur[1]->etat == JOUE) {
-    printf("[DEBUG] %s est éliminé !\n", match->joueur[0]->pseudo);
-    match->joueur[1]->score += match->joueur[0]->score;
+static void _checkELIMINE(struct Match *match) {
+  if (match->joueur[0]->etat == ELIMINE && match->joueur[1]->etat != ELIMINE) {
+    printf("[DEBUG MATCH] %s VS %s: %s est éliminé !\n",
+           match->joueur[0]->pseudo, match->joueur[1]->pseudo,
+           match->joueur[0]->pseudo);
     match->joueur[0]->score = 0;
     match->etat = ENDED;
 
     pthread_exit(NULL);
 
-  } else if (match->joueur[0]->etat == JOUE &&
+  } else if (match->joueur[0]->etat != ELIMINE &&
              match->joueur[1]->etat == ELIMINE) {
-    printf("[DEBUG] %s est éliminé !\n", match->joueur[1]->pseudo);
-    match->joueur[0]->score += match->joueur[1]->score;
+    printf("[DEBUG MATCH] %s VS %s: %s est éliminé !\n",
+           match->joueur[0]->pseudo, match->joueur[1]->pseudo,
+           match->joueur[1]->pseudo);
     match->joueur[1]->score = 0;
     match->etat = ENDED;
 
@@ -201,23 +210,13 @@ static void _checkJOUE(struct Match *match) {
 
   } else if (match->joueur[0]->etat == ELIMINE &&
              match->joueur[1]->etat == ELIMINE) {
-    printf("[DEBUG] %s VS %s : Ah ben bravo...\n", match->joueur[0]->pseudo,
-           match->joueur[1]->pseudo);
+    printf("[DEBUG MATCH] %s VS %s : Ah ben bravo...\n",
+           match->joueur[0]->pseudo, match->joueur[1]->pseudo);
     match->joueur[0]->score = 0;
     match->joueur[1]->score = 0;
     match->etat = ENDED;
 
     pthread_exit(NULL);
-
-  } else if (match->joueur[0]->etat != JOUE && match->joueur[1]->etat != JOUE) {
-    char errout[100];
-    printf("[ERREUR DEBUG] %s ETAT %i\n", match->joueur[0]->pseudo,
-           match->joueur[0]->etat);
-    printf("[ERREUR DEBUG] %s ETAT %i\n", match->joueur[1]->pseudo,
-           match->joueur[1]->etat);
-    sprintf(errout, "%s ou %s possède un état impossible à traiter.\n",
-            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
-    erreur_pthread_IO(errout);
   }
 }
 
