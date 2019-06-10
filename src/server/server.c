@@ -127,6 +127,12 @@ int main(int argc, char const* argv[]) {
       close(canal);
       continue;  // Skip ahead
     }
+    if (datacontext->liste_matches == NULL) {
+      printf("Server: Connection refused. Game is running.\n");
+      ecrireLigne(canal, "Connexion refusée. Une partie est en cours.\n");
+      close(canal);
+      continue;
+    }
 
     if (sem_wait(&sem_global) != 0) erreur_IO("sem_wait");
     thread_libre = _chercherWorkerLibre(datacontext->client_threads);

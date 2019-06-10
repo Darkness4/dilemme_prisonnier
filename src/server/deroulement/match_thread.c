@@ -57,6 +57,7 @@ void joinMatchWorkers(struct ListeMatches *liste_matches) {
     if (pthread_join(liste_matches->matches[i]->pthread_id, NULL) != 0)
       erreur_IO("pthread_join");
   }
+  detruireListeMatch(liste_matches);
 }
 
 static void *_matchThread(void *val) {
