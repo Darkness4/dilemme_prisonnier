@@ -17,6 +17,7 @@
 
 #include "match_thread.h"
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -32,7 +33,7 @@ static void _checkELIMINE(struct Match *match);
 /// Vérifie le bon fonctionnement des choix lors du match.
 static void _checkCHOIX(struct Match *match);
 /// Envoyer du texte aux deux joueurs du Match.
-static void _printTo2(struct Joueur **joueurs, char *text);
+static void _printTo2(struct Joueur **joueurs, const char *format, ...);
 
 /**
  * @brief Créer tout les workers pour chaque matches.
@@ -95,6 +96,10 @@ static void *_matchThread(void *val) {
   printf("[DEBUG THREAD] %s VS %s: /start received !\n",
          match->joueur[0]->pseudo, match->joueur[1]->pseudo);
 
+  _printTo2(match->joueur, "Serveur> Match START !\n");
+  _printTo2(match->joueur,
+            "Serveur> \033[4mLa conversation est désormais privée...\033[0m\n");
+
   indicateurNiveauxJoueurs(match->joueur[0], match->joueur[1]);
 
   match->etat = STARTED;
@@ -105,6 +110,7 @@ static void *_matchThread(void *val) {
            match->round_count);
     printf("[DEBUG THREAD] %s VS %s: Waiting for decisions...\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
+    _printTo2(match->joueur, "Serveur> Round %i !\n", match->round_count + 1);
     _printTo2(match->joueur, "Serveur> Souhaitez-vous trahir ou coopérer ?\n");
     _printTo2(match->joueur, "CMDS: /trahir /coop /quit\n");
 
@@ -160,6 +166,8 @@ static void *_matchThread(void *val) {
     printf("[DEBUG THREAD] %s VS %s: Round %i ended !\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo,
            match->round_count);
+    _printTo2(match->joueur, "Serveur> <== Round %i END ==>\n",
+              match->round_count + 1);
 
     afficherScoreJoueur(match->joueur[0]);
     afficherScoreJoueur(match->joueur[1]);
@@ -170,6 +178,10 @@ static void *_matchThread(void *val) {
 
   match->joueur[0]->etat = ATTENTE;
   match->joueur[1]->etat = ATTENTE;
+  _printTo2(match->joueur, "Serveur> Le match est terminée !\n");
+  _printTo2(
+      match->joueur,
+      "Serveur> \033[4mLa conversation est désormais publique...\033[0m\n");
   _printTo2(match->joueur, "Serveur> /pret pour chercher un match...\n");
   _printTo2(match->joueur, "CMDS: /pret /quit\n");
 
@@ -238,9 +250,12 @@ static void _checkCHOIX(struct Match *match) {
   }
 }
 
-static void _printTo2(struct Joueur **joueurs, char *text) {
-  int lgEcr = ecrireLigne(joueurs[0]->canal, text);
-  if (lgEcr <= -1) erreur_IO("ecrireLigne");
-  lgEcr = ecrireLigne(joueurs[1]->canal, text);
-  if (lgEcr <= -1) erreur_IO("ecrireLigne");
+static void _printTo2(struct Joueur **joueurs, const char *format, ...) {
+  char buf[BUFSIZ];
+  va_list liste_arg;
+  va_start(liste_arg, format);
+  vsprintf(buf, format, liste_arg);
+  va_end(liste_arg);
+  ecrireLigne(joueurs[0]->canal, buf);
+  ecrireLigne(joueurs[1]->canal, buf);
 }
