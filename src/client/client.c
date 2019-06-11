@@ -105,6 +105,18 @@ int main(int argc, char const *argv[]) {
   pid = fork();
   if (pid == -1) erreur_IO("fork");
   if (pid == 0) {  // processus d'écriture
+    char ligne_serveur[BUFSIZ];
+    while (1) {
+      lgLue = lireLigne(soc, ligne_serveur);
+      if (lgLue < 0)
+        erreur_IO("lireLigne");
+      else if (lgLue == 0) {
+        raise(SIGINT);
+      }
+
+      printf("\033[1;32m%s\033[0;0m\n", ligne_serveur);
+    }
+  } else {  // processus de lecture
     char ligne_client[BUFSIZ];
     while (1) {
       fgets(ligne_client, BUFSIZ, stdin);
@@ -114,17 +126,6 @@ int main(int argc, char const *argv[]) {
         printf("QUITTING!\n");
         raise(SIGINT);
       }
-    }
-  } else {  // processus de lecture
-    char ligne_serveur[BUFSIZ];
-    while (1) {
-      lgLue = lireLigne(soc, ligne_serveur);
-      if (lgLue < 0)
-        erreur_IO("lireLigne");
-      else if (lgLue == 0)
-        erreur("arret client\n");
-
-      printf("\033[1;32m%s\033[0;0m\n", ligne_serveur);
     }
   }
   if (close(soc) == -1) erreur_IO("close socket");
@@ -148,6 +149,6 @@ static void intHandler(int sig) {
   if (lgEcr == -1) erreur_IO("ecrireLigne");
   if (close(soc) == -1) erreur_IO("close socket");
   printf("Interrupt catched: signal %i\n", WTERMSIG(sig));
-  kill(pid, SIGTERM);
+  kill(pid, SIGKILL);
   exit(SIGINT);
 }
