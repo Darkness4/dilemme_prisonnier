@@ -11,6 +11,7 @@
 #include "joueur_view.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../error_handler/error_handler.h"
 #include "../ligne/ligne.h"
@@ -18,19 +19,28 @@
 /// Affiche le score de tout le monde à tout le monde
 void afficherScoreListeJoueurs(struct ListeJoueurs* liste_joueurs) {
   struct Joueur* pJoueur = liste_joueurs->HEAD;
-  struct Joueur* pJoueur2 = liste_joueurs->HEAD;
+  unsigned char nb_joueurs = liste_joueurs->nb_joueurs;
   char ligne_client[BUFSIZ];
-  while (pJoueur != NULL) {
-    sprintf(ligne_client, "%s: %li\n", pJoueur->pseudo, pJoueur->score);
+  struct Joueur* liste_tri[nb_joueurs];
 
-    // Broadcast
-    pJoueur2 = liste_joueurs->HEAD;
-    while (pJoueur2 != NULL) {
-      ecrireLigne(pJoueur2->canal, ligne_client);
-      pJoueur2 = pJoueur2->next;
-    }
+  for (int i = 0; i < nb_joueurs; i++) {
+    liste_tri[i] = pJoueur;
     pJoueur = pJoueur->next;
   }
+
+  qsort(liste_tri, nb_joueurs, sizeof(struct Joueur*), cmpfonction);
+  for (int i = 0; i < nb_joueurs; i++) {
+    sprintf(ligne_client, "%s: %li\n", liste_tri[nb_joueurs - 1 - i]->pseudo,
+            liste_tri[nb_joueurs - 1 - i]->score);
+    // Broadcast
+    broadcastJoueurs(liste_joueurs, ligne_client);
+  }
+}
+
+int cmpfonction(const void* a, const void* b) {
+  struct Joueur* joueur1 = (struct Joueur*)a;
+  struct Joueur* joueur2 = (struct Joueur*)b;
+  return ((joueur1->score) - (joueur2->score));
 }
 
 /// Affiche son propre score à lui-même.
