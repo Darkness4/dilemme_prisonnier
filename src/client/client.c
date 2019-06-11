@@ -111,10 +111,11 @@ int main(int argc, char const *argv[]) {
       if (lgLue < 0)
         erreur_IO("lireLigne");
       else if (lgLue == 0) {
+        printf("\033[1;31mServer is dead, long live the server!\033[0m\n");
         raise(SIGINT);
       }
 
-      printf("\033[1;32m%s\033[0;0m\n", ligne_serveur);
+      printf("\033[1;32m%s\033[0m\n", ligne_serveur);
     }
   } else {  // processus de lecture
     char ligne_client[BUFSIZ];
@@ -148,7 +149,7 @@ static void intHandler(int sig) {
   int lgEcr = ecrireLigne(soc, "/quit\n");
   if (lgEcr == -1) erreur_IO("ecrireLigne");
   if (close(soc) == -1) erreur_IO("close socket");
-  printf("Interrupt catched: signal %i\n", WTERMSIG(sig));
+  printf("Exit %i\n", WTERMSIG(sig));
   kill(pid, SIGKILL);
   exit(SIGINT);
 }

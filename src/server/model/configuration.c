@@ -16,7 +16,12 @@
 #include "../error_handler/error_handler.h"
 
 struct Config lireConfig(void) {
-  struct Config config;
+  struct Config config = {
+      // Default value
+      .NB_JOUEURS_MAX = 24, .SCORE_DEFAULT = 1000000, .DURATION = 5,
+      .SCORE_TC = 400000,   .SCORE_2COOP = 100000,    .SCORE_2TRAHIR = 200000,
+      .MAX_ROUND = 5,
+  };
   char properties[BUFSIZ];
   char value[BUFSIZ];
   char line[BUFSIZ];
