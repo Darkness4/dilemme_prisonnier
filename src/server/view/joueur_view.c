@@ -38,8 +38,8 @@ void afficherScoreListeJoueurs(struct ListeJoueurs* liste_joueurs) {
 }
 
 int cmpfonction(const void* a, const void* b) {
-  struct Joueur* joueur1 = (struct Joueur*)a;
-  struct Joueur* joueur2 = (struct Joueur*)b;
+  const struct Joueur* joueur1 = *(const struct Joueur**)a;
+  const struct Joueur* joueur2 = *(const struct Joueur**)b;
   return ((joueur1->score) - (joueur2->score));
 }
 
