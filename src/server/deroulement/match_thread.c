@@ -207,7 +207,6 @@ static void _checkELIMINE(struct Match *match) {
     match->etat = ENDED;
 
     pthread_exit(NULL);
-
   } else if (match->joueur[0]->etat == ELIMINE &&
              match->joueur[1]->etat == ELIMINE) {
     printf("[DEBUG MATCH] %s VS %s : Ah ben bravo...\n",

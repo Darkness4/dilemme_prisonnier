@@ -10,6 +10,7 @@ enum EtatJoueur {
   ATTENTE,
   PRET2,
   ELIMINE,
+  NONE,
 };
 
 // Choix d'un Joueur
@@ -36,7 +37,7 @@ struct Joueur {
   /// Match du joueur participant.
   struct Match* match;
   /// Indice du joueur dans la struct Match.
-  char id_joueur_match;
+  int id_joueur_match;
   /// Canal de communication.
   int canal;
 };
@@ -66,6 +67,9 @@ char* popJoueur(struct ListeJoueurs* liste_joueurs);
 char* popJoueurParPseudo(struct ListeJoueurs* liste_joueurs, char* pseudo);
 /// Ejecte un Joueur précis par canal.
 int popJoueurParCanal(struct ListeJoueurs* liste_joueurs, int canal);
+/// Ejecte un Joueur par Etat.
+enum EtatJoueur popJoueurParEtat(struct ListeJoueurs* liste_joueurs,
+                                 enum EtatJoueur etat);
 /// Clone les Joueurs et la liste de Joueurs.
 struct ListeJoueurs* clonerListeJoueurs(struct ListeJoueurs* liste_joueurs);
 /// Envoie du texte dans le canal des joueur dans la liste de joueurs

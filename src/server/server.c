@@ -118,6 +118,10 @@ int main(int argc, char const* argv[]) {
            stringIP(ntohl(adrClient.sin_addr.s_addr)),
            ntohs(adrClient.sin_port));
 
+    // Enlever les joueurs éliminé
+    while (popJoueurParEtat(datacontext->liste_joueurs, ELIMINE) != NONE)
+      continue;
+
     // Refuse la connection si jeu en cours
     if (datacontext->liste_matches != NULL) {
       printf("Server: Connection refused. Game is running.\n");

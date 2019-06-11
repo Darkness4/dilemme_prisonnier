@@ -126,7 +126,6 @@ char* popJoueur(struct ListeJoueurs* liste_joueurs) {
  * @return char* Pseudonyme du Joueur éjecté
  */
 char* popJoueurParPseudo(struct ListeJoueurs* liste_joueurs, char* pseudo) {
-  if (liste_joueurs->nb_joueurs < 1) erreur("Tentative de pop aucun joueur !");
   struct Joueur* pJoueur = liste_joueurs->HEAD;
   struct Joueur* next;
   char* pseudo_return = NULL;
@@ -150,6 +149,39 @@ char* popJoueurParPseudo(struct ListeJoueurs* liste_joueurs, char* pseudo) {
 }
 
 /**
+ * @brief Ejecte un Joueur par ETAT.
+ *
+ * NONE = Not found.
+ *
+ * @param liste_joueurs Pointer vers la struct ListeJoueurs.
+ * @param pseudo Etat du Joueur à éjecter
+ * @return char* Pseudonyme du Joueur éjecté
+ */
+enum EtatJoueur popJoueurParEtat(struct ListeJoueurs* liste_joueurs,
+                                 enum EtatJoueur etat) {
+  struct Joueur* pJoueur = liste_joueurs->HEAD;
+  struct Joueur* next;
+  enum EtatJoueur etat_return = NONE;
+
+  while (pJoueur != NULL) {
+    if (pJoueur->etat == etat) {
+      next = pJoueur->next;
+      if (pJoueur->prev == NULL)
+        liste_joueurs->HEAD = next;
+      else
+        pJoueur->prev->next = next;
+      if (next != NULL) next->prev = pJoueur->prev;
+      etat_return = pJoueur->etat;
+      detruireJoueur(pJoueur);
+      liste_joueurs->nb_joueurs--;
+      return etat_return;
+    }
+    pJoueur = pJoueur->next;
+  }
+  return etat_return;
+}
+
+/**
  * @brief Ejecte un Joueur précis par canal.
  *
  * -1 = Erreur.
@@ -159,7 +191,6 @@ char* popJoueurParPseudo(struct ListeJoueurs* liste_joueurs, char* pseudo) {
  * @return int Canal du Joueur éjecté
  */
 int popJoueurParCanal(struct ListeJoueurs* liste_joueurs, int canal) {
-  if (liste_joueurs->nb_joueurs < 1) erreur("Tentative de pop aucun joueur !");
   struct Joueur* pJoueur = liste_joueurs->HEAD;
   struct Joueur* next;
   int canal_return = -1;

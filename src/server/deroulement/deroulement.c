@@ -69,6 +69,8 @@ void* deroulement(void* val) {
     broadcastJoueurs(datacontext->liste_joueurs,
                      "Le jeu est terminé. Merci d'y avoir participé !\n");
     afficherScoreListeJoueurs(datacontext->liste_joueurs);
+    while (popJoueurParEtat(datacontext->liste_joueurs, ELIMINE) != NONE)
+      continue;
     setEtatListeJoueurs(datacontext->liste_joueurs, NOT_PRET);
   }
   pthread_exit(NULL);

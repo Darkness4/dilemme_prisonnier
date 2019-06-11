@@ -48,7 +48,7 @@ static void* _threadSessionClient(void* arg) {
 
     _sessionClient(client_thread->joueur);
 
-    detruireJoueur(client_thread->joueur);
+    client_thread->joueur = NULL;
 
     sem_post(&sem_global);
 
@@ -173,8 +173,8 @@ static void _sessionClient(struct Joueur* joueur) {
           broadcastAutreJoueurs(joueur, "/quit\n");
           printf("[DEBUG STATE] %s est ELIMINE\n", joueur->pseudo);
           joueur->etat = ELIMINE;
-          if (sem_destroy(&joueur->match->state_sem) != 0)
-            erreur_pthread_IO("sem_destroy");
+          if (sem_post(&joueur->match->state_sem) != 0)
+            erreur_pthread_IO("sem_post");
 
         } else if (strcmp(ligne_serveur, "/trahir") == 0) {
           printf("[DEBUG STATE] %s est TRAHIR\n", joueur->pseudo);
@@ -208,7 +208,10 @@ static void _sessionClient(struct Joueur* joueur) {
           if (lgEcr <= -1) erreur_IO("ecrireLigne");
         }
         break;
+      case NONE:
+        break;
     }
+
     printf("[CHAT] %s> %s\n", joueur->pseudo, ligne_serveur);
   }
 
