@@ -12,7 +12,7 @@ then
         echo "score-double-coop=100000"
         echo "max-rounds=5"
     } > bin/server.properties
-    echo "Configuration succefully generated !"
+    echo "Configuration successfully generated !"
 else
     echo "Configuration already exists..."
 fi
