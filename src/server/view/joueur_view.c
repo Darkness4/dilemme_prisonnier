@@ -58,10 +58,10 @@ long indicateurNiveauxJoueurs(struct Joueur* joueur1, struct Joueur* joueur2) {
   } else {
     printf("[DEBUG] %s et %s sont au même niveau.\n", joueur1->pseudo,
            joueur2->pseudo);
-    lgEcr =
-        ecrireLigne(joueur1->canal, "Les deux joueurs sont au même niveau.\n");
-    lgEcr +=
-        ecrireLigne(joueur2->canal, "Les deux joueurs sont au même niveau.\n");
+    lgEcr = ecrireLigne(joueur1->canal,
+                        "Serveur> Les deux joueurs sont au même niveau.\n");
+    lgEcr += ecrireLigne(joueur2->canal,
+                         "Serveur> Les deux joueurs sont au même niveau.\n");
     if (lgEcr <= -1) erreur_IO("ecrireLigne");
   }
 

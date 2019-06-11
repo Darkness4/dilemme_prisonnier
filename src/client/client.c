@@ -107,7 +107,6 @@ int main(int argc, char const *argv[]) {
   if (pid == 0) {  // processus d'écriture
     char ligne_client[BUFSIZ];
     while (1) {
-      printf("\033[34m%s> \033[0m", argv[3]);
       fgets(ligne_client, BUFSIZ, stdin);
       lgEcr = ecrireLigne(soc, ligne_client);
       if (lgEcr == -1) erreur_IO("ecrireLigne");
@@ -125,7 +124,7 @@ int main(int argc, char const *argv[]) {
       else if (lgLue == 0)
         erreur("arret client\n");
 
-      printf("%s\n", ligne_serveur);
+      printf("\033[1;32m%s\033[0;0m\n", ligne_serveur);
     }
   }
   if (close(soc) == -1) erreur_IO("close socket");

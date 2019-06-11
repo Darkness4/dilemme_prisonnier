@@ -5,11 +5,11 @@ TARGET_SERVER ?= $(shell basename $(CURDIR))_server
 
 # Compiler
 CC ?= gcc
-CFLAGS ?= -std=gnu11 -pedantic -Wall -Wextra -lm -lpthread -I .
+CFLAGS ?= -std=gnu11 -pedantic -Wall -Wextra -lpthread -I .
 
 # Linker
 LINKER ?= $(CC)
-LFLAGS ?= -Wall -I . -lm -lpthread
+LFLAGS ?= -Wall -I . -lpthread
 
 # Project structure
 SRCDIR ?= src

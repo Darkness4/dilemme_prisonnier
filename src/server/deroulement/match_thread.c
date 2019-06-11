@@ -79,13 +79,8 @@ static void *_matchThread(void *val) {
   match->joueur[1]->match = match;
   match->joueur[0]->id_joueur_match = 0;
   match->joueur[1]->id_joueur_match = 1;
-  int lgEcr =
-      ecrireLigne(match->joueur[0]->canal, "Un match est disponible !\n");
-  lgEcr += ecrireLigne(match->joueur[0]->canal, "CMDS: /start /quit\n");
-  if (lgEcr <= -1) erreur_IO("ecrireLigne");
-  lgEcr = ecrireLigne(match->joueur[1]->canal, "Un match est disponible !\n");
-  lgEcr += ecrireLigne(match->joueur[1]->canal, "CMDS: /start /quit\n");
-  if (lgEcr <= -1) erreur_IO("ecrireLigne");
+  _printTo2(match->joueur, "Serveur> Un match est disponible !\n");
+  _printTo2(match->joueur, "CMDS: /start /quit\n");
 
   printf("[DEBUG THREAD] %s VS %s: Les joueurs doivent accepter !\n",
          match->joueur[0]->pseudo, match->joueur[1]->pseudo);
@@ -110,7 +105,7 @@ static void *_matchThread(void *val) {
            match->round_count);
     printf("[DEBUG THREAD] %s VS %s: Waiting for decisions...\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
-    _printTo2(match->joueur, "Souhaitez-vous trahir ou coopérer ?\n");
+    _printTo2(match->joueur, "Serveur> Souhaitez-vous trahir ou coopérer ?\n");
     _printTo2(match->joueur, "CMDS: /trahir /coop /quit\n");
 
     // Les clients handlers sont en train de travailler...
@@ -175,7 +170,7 @@ static void *_matchThread(void *val) {
 
   match->joueur[0]->etat = ATTENTE;
   match->joueur[1]->etat = ATTENTE;
-  _printTo2(match->joueur, "/pret pour chercher un match...\n");
+  _printTo2(match->joueur, "Serveur> /pret pour chercher un match...\n");
   _printTo2(match->joueur, "CMDS: /pret /quit\n");
 
   match->etat = ENDED;

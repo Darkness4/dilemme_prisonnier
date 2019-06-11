@@ -63,11 +63,11 @@ static void _sessionClient(struct Joueur* joueur) {
   char ligne_serveur[BUFSIZ];
   int lgEcr = ecrireLigne(
       joueur->canal,
-      "Bienvenue sur le jeu du Dilemme du Prisonnier Multijoueur\n");
+      "Serveur> Bienvenue sur le jeu du Dilemme du Prisonnier Multijoueur\n");
   lgEcr += ecrireLigne(joueur->canal, "CMDS: /pret /quit\n");
-  lgEcr += ecrireLigne(
-      joueur->canal,
-      "Entrez /pret lorsque tous les joueurs ont rejoint le serveur\n");
+  lgEcr += ecrireLigne(joueur->canal,
+                       "Serveur> Entrez /pret lorsque tous les joueurs ont "
+                       "rejoint le serveur\n");
   if (lgEcr <= -1) erreur_IO("ecrireLigne");
   broadcastAutreJoueurs(joueur, "s'est connecté.\n");
 
@@ -88,8 +88,9 @@ static void _sessionClient(struct Joueur* joueur) {
           printf("[DEBUG STATE] %s est PRET1\n", joueur->pseudo);
           joueur->etat = PRET1;
           lgEcr = ecrireLigne(joueur->canal, "CMDS: /!pret /quit\n");
-          lgEcr += ecrireLigne(joueur->canal,
-                               "Veuillez attendre les autres joueurs...\n");
+          lgEcr +=
+              ecrireLigne(joueur->canal,
+                          "Serveur> Veuillez attendre les autres joueurs...\n");
           if (lgEcr <= -1) erreur_IO("ecrireLigne");
         } else
           broadcastAutreJoueurs(joueur, ligne_serveur);
@@ -121,8 +122,8 @@ static void _sessionClient(struct Joueur* joueur) {
           broadcastAutreJoueurs(joueur, "/!pret\n");
           printf("[DEBUG STATE] %s est ATTENTE\n", joueur->pseudo);
           joueur->etat = ATTENTE;
-          lgEcr =
-              ecrireLigne(joueur->canal, "/pret pour chercher un match...\n");
+          lgEcr = ecrireLigne(joueur->canal,
+                              "Serveur> /pret pour chercher un match...\n");
           lgEcr += ecrireLigne(joueur->canal, "CMDS: /pret /quit\n");
           if (lgEcr <= -1) erreur_IO("ecrireLigne");
         } else
@@ -142,8 +143,8 @@ static void _sessionClient(struct Joueur* joueur) {
           joueur->etat = JOUE;
           if (sem_post(&joueur->match->state_sem) != 0)
             erreur_pthread_IO("sem_post");
-          lgEcr =
-              ecrireLigne(joueur->canal, "En attente de l'autre joueur...\n");
+          lgEcr = ecrireLigne(joueur->canal,
+                              "Serveur> En attente de l'autre joueur...\n");
           if (lgEcr <= -1) erreur_IO("ecrireLigne");
         } else
           broadcastAutreJoueurs(joueur, ligne_serveur);
@@ -194,8 +195,8 @@ static void _sessionClient(struct Joueur* joueur) {
                 erreur_pthread_IO("sem_post");
           }
 
-          lgEcr =
-              ecrireLigne(joueur->canal, "En attente de l'autre joueur...\n");
+          lgEcr = ecrireLigne(joueur->canal,
+                              "Serveur> En attente de l'autre joueur...\n");
           lgEcr += ecrireLigne(joueur->canal, "CMDS: /trahir /coop /quit\n");
           if (lgEcr <= -1) erreur_IO("ecrireLigne");
 

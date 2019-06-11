@@ -125,7 +125,8 @@ int main(int argc, char const* argv[]) {
     // Refuse la connection si jeu en cours
     if (datacontext->liste_matches != NULL) {
       printf("Server: Connection refused. Game is running.\n");
-      ecrireLigne(canal, "Connexion refusée. Une partie est en cours.\n");
+      ecrireLigne(canal,
+                  "Serveur> Connexion refusée. Une partie est en cours.\n");
       close(canal);
       continue;
     }
@@ -135,8 +136,9 @@ int main(int argc, char const* argv[]) {
     if (lireLigne(canal, pseudo) < 0) erreur_IO("lireLigne");
     if (trouverJoueurParPseudo(datacontext->liste_joueurs, pseudo) != NULL) {
       printf("Server: Connection refused. Pseudo aleady in use.\n");
-      ecrireLigne(canal,
-                  "Connexion refusée. Veuillez choisir un autre pseudo.\n");
+      ecrireLigne(
+          canal,
+          "Serveur> Connexion refusée. Veuillez choisir un autre pseudo.\n");
       close(canal);
       continue;  // Skip ahead
     }

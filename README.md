@@ -60,7 +60,15 @@ Notre version multijoueur est différente de l'original:
 
 ## Build
 
-```bash
+Installez les dépendances nécéssaire si ce n'est pas déjà fait :
+
+```sh
+apt install build-essential
+```
+
+Ensuite, utilisez le Makefile :
+
+```sh
 cd dilemme-prisonnier
 make -j4  # ou make executable -j4
           # Si debug: make debug -j4
