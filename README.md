@@ -122,4 +122,4 @@ Pour obtenir de l'aide:
 
 ## Documentation annexe
 
-[Documentation Doxygen](http://marc.nguyen.gitlab.emse.fr/projets6-marcnguyen-thomaslardy/)
+[Documentation Doxygen](http://marc.nguyen.gitlab.emse.fr/dilemme_prisonnier)
