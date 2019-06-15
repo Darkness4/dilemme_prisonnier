@@ -180,8 +180,9 @@ static void _sessionClient(struct Joueur* joueur) {
         } else if (strcmp(ligne_serveur, "/trahir") == 0) {
           printf("[DEBUG STATE] %s est TRAHIR\n", joueur->pseudo);
           if (joueur->choix != TRAHIR) {
+            enum ChoixJoueur oldchoix = joueur->choix;
             joueur->choix = TRAHIR;
-            if (joueur->choix != COOPERER)
+            if (oldchoix != COOPERER)
               if (sem_post(&joueur->match->state_sem) != 0)
                 erreur_pthread_IO("sem_post");
           }
@@ -189,8 +190,9 @@ static void _sessionClient(struct Joueur* joueur) {
         } else if (strcmp(ligne_serveur, "/coop") == 0) {
           printf("[DEBUG STATE] %s est COOPERER\n", joueur->pseudo);
           if (joueur->choix != COOPERER) {
+            enum ChoixJoueur oldchoix = joueur->choix;
             joueur->choix = COOPERER;
-            if (joueur->choix != TRAHIR)
+            if (oldchoix != TRAHIR)
               if (sem_post(&joueur->match->state_sem) != 0)
                 erreur_pthread_IO("sem_post");
           }
