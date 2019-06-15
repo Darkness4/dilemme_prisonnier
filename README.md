@@ -1,5 +1,7 @@
 # Programmation Système Projet
 
+https://gitlab.emse.fr/marc.nguyen/dilemme_prisonnier
+
 ## Dilemme du Prisonnier Multijoueur (avec chat)
 
 Par Marc NGUYEN et Thomas LARDY.
@@ -17,28 +19,27 @@ Par Marc NGUYEN et Thomas LARDY.
 
 ## Règles du jeu
 
-L'objectif est d'obtenir **un maximum de points**.
+L'objectif est d'obtenir le **plus de points possible**.
 
-Chaque joueur commence avec un nombre de points par défaut.
+Chaque joueur commence avec un **nombre de points par défaut**.
 
-Chaque partie se constitue de plusieurs matches 1v1.
+Chaque jeu consiste en **plusieurs matchs 1v1**.
 
-Pendant ces matches, les deux joueurs doivent choisir entre **trahir** et
-**coopérer**.
+Pendant ces matchs, les deux joueurs doivent choisir entre **trahir** et **coopérer**.
 
-Une fois que les choix sont faits, un de ces cas va se présenter:
+Une fois les choix faits, l'un de ces cas se présentera :
 
-- Si A et B trahissent, A et B perdent des points ensembles
-- Si A trahit B, A vole des points à B (et vice versa)
-- Si A et B coopèrent, A et B gagnent des points ensembles
+- Si A et B trahissent, A et B **perdent des points ensemble**.
+- Si A trahit B, A **vole des points** à B (et vice versa)
+- Si A et B coopèrent, A et B **gagnent des points ensemble**.
 
-Notre version multijoueur est différente de l'original:
+Notre version multijoueur est différente de l'original :
 
-- Chaque joueur s'affronte les uns contre les autres. (Il y a 2 parmi n combinaisons différentes)
-- Chaque match dure 5 rounds (par défaut)
-- Le nombre de points est sauvegardé durant toute la partie. La victoire est uniquement décisive à la fin de la partie.
-- Les joueurs peuvent se parler entre eux. On pousse ainsi la création d'alliance.
-- Les joueurs partent avec un nombre de points au départ.
+- Chaque joueur est en compétition l'un contre l'autre. (Il y a 2 parmi n joueurs combinaisons)
+- Chaque match dure 5 tours (par défaut)
+- Le nombre de points est sauvegardé tout au long de la partie. La victoire n'est décisive qu'à la fin de la partie.
+- Les joueurs peuvent se parler. Cela favorise la création d'alliances.
+- Les joueurs commencent avec un certain nombre de points au départ.
 
 ## Déroulement
 
@@ -56,11 +57,11 @@ Notre version multijoueur est différente de l'original:
   - Le chat est P2P
 - **Phase finale**
   - Affichage du classement
-  - Passage immédiat en **phase de connexion**
+  - Passage immédiat en **phase de connexion** et réinitialisation des scores.
 
 ## Build
 
-Installez les dépendances nécéssaire si ce n'est pas déjà fait :
+Installez les dépendances nécessaires si vous ne l'avez pas déjà fait :
 
 ```sh
 apt install build-essential
@@ -93,31 +94,35 @@ score-double-coop=100000
 max-rounds=5
 ```
 
+Le fichier [server.properties](./bin/server.properties) doit être à côté de l'executable.
+
 Choisissez le port dans lequel l'hôte doit ouvrir la connection.
 Ce port entrant doit être ouvert en TCP.
 
 ```sh
-./bin/dilemme_prisonnier_server <port>
+cd bin
+./dilemme_prisonnier_server <port>
 ```
 
 Pour obtenir de l'aide:
 
 ```sh
-./bin/dilemme_prisonnier_server -h
+./dilemme_prisonnier_server -h
 ```
 
 #### Client
 
-Choisissez l'ip, le port et le pseudonyme dans lequel le joueur utilisera.
+Choisissez l'ip du serveur, le port et le pseudonyme dans lequel le joueur utilisera.
 
 ```sh
-./bin/dilemme_prisonnier_client <ip> <port> <pseudo>
+cd bin
+./dilemme_prisonnier_client <ip> <port> <pseudo>
 ```
 
 Pour obtenir de l'aide:
 
 ```sh
-./bin/dilemme_prisonnier_client -h
+./dilemme_prisonnier_client -h
 ```
 
 ## Documentation annexe
