@@ -29,20 +29,13 @@ build-linux:
   stage: build
   script: 
   - apk add build-base cmake ninja
-  - mkdir build
-  - cd build
-  - cmake -Gninja ..
-  - ninja
+  - sh scripts/build.sh
   artifacts:
     paths:
       - bin/${TARGET}_client
       - bin/${TARGET}_server
       - bin/server.properties
     expire_in: 1 week
-  only:
-  - master
-  - tags
-  - gitlab-ci-test
 
 test-docs:
   image: alpine:latest
@@ -50,20 +43,6 @@ test-docs:
   script:
   - apk add doxygen graphviz ghostscript-fonts
   - doxygen Doxyfile
-
-test-build-linux:
-  image: alpine:latest
-  stage: build
-  script:
-  - apk add build-base cmake ninja
-  - mkdir build
-  - cd build
-  - cmake -Gninja ..
-  - ninja
-  except:
-  - master
-  - tags
-  - gitlab-ci-test
 
 production:
   type: deploy

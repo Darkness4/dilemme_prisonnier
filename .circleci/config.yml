@@ -1,0 +1,58 @@
+version: 2
+jobs:
+  build-linux:
+    docker:
+      - image: alpine:latest
+    steps:
+      - checkout
+      - run: 
+          name: Install dependencies
+          command: 'apk add build-base cmake ninja'
+      - run: 
+          name: Build binaries
+          command: 'sh scripts/build.sh'
+      - store_artifacts:
+          path: bin/
+  pages:
+    docker:
+      - image: alpine:latest
+    steps:
+      - checkout
+      - run: 
+          name: Install dependencies
+          command: 'apk add doxygen graphviz ghostscript-fonts'
+      - run: 
+          name: Build documentations
+          command: 'doxygen Doxyfile'
+      - persist_to_workspace:
+          root: webdoc
+          paths: html
+  docs-deploy:
+    docker:
+      - image: node:latest
+    steps:
+      - checkout
+      - attach_workspace:
+          at: webdoc
+      - run:
+          name: Install and configure dependencies
+          command: |
+            npm install -g --silent gh-pages@2.1.0
+            git config user.email "ci-build@marc.nguyen"
+            git config user.name "ci-build"
+      - run:
+          name: Deploy docs to gh-pages branch
+          command: gh-pages --dist webdoc/html
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build-linux
+      - pages
+      - docs-deploy:
+          requires:
+            - build-linux
+            - pages
+          filters:
+            branches:
+              only: master
