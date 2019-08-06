@@ -9,11 +9,10 @@
  */
 #include "configuration.h"
 
+#include <error_handler.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "../error_handler/error_handler.h"
 
 struct Config lireConfig(void) {
   struct Config config = {

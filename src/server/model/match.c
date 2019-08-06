@@ -10,9 +10,8 @@
 
 #include "match.h"
 
+#include <error_handler.h>
 #include <stdlib.h>
-
-#include "../error_handler/error_handler.h"
 
 /// nombre!
 static long _factorielle(long nombre);

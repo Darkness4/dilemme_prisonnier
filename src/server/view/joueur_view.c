@@ -10,11 +10,10 @@
 
 #include "joueur_view.h"
 
+#include <error_handler.h>
+#include <ligne.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "../error_handler/error_handler.h"
-#include "../ligne/ligne.h"
 
 /// Affiche le score de tout le monde à tout le monde
 void afficherScoreListeJoueurs(struct ListeJoueurs* liste_joueurs) {

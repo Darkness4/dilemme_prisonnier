@@ -17,12 +17,12 @@
 
 #include "match_thread.h"
 
+#include <error_handler.h>
+#include <ligne.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
 
-#include "../error_handler/error_handler.h"
-#include "../ligne/ligne.h"
 #include "../model/datacontext.h"
 #include "../view/joueur_view.h"
 

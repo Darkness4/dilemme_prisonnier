@@ -48,13 +48,13 @@ int lireLigne(int fd, char *buffer) {
   return LIGNE_MAX;
 }
 
-int ecrireLigne(int fd, char *buffer) {
+long ecrireLigne(int fd, char *buffer) {
   char *position;
-  int taille, ecr, nbecr;
+  long taille, ecr, nbecr;
 
   position = strchr(buffer, '\n');
   if (position == NULL) {
-    taille = strlen(buffer);
+    taille = (long)strlen(buffer);
     if (taille >= LIGNE_MAX - 1) {
       errno = EINVAL;
       return -1;
@@ -68,7 +68,7 @@ int ecrireLigne(int fd, char *buffer) {
   nbecr = taille;
 
   while (taille > 0) {
-    ecr = write(fd, buffer, taille);
+    ecr = write(fd, buffer, (size_t)taille);
     if (ecr == -1) {
       return -1;
     }

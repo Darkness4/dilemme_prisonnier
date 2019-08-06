@@ -13,13 +13,13 @@
 
 #include "client_thread.h"
 
+#include <error_handler.h>
+#include <ligne.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "../error_handler/error_handler.h"
-#include "../ligne/ligne.h"
 #include "../model/datacontext.h"
 #include "../view/joueur_view.h"
 #include "joueur.h"

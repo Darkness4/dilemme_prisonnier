@@ -35,10 +35,13 @@
 
 #include <arpa/inet.h>
 #include <assert.h>
+#include <error_handler.h>
 #include <fcntl.h>
+#include <ligne.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <resolv.h>
 #include <semaphore.h>
 #include <signal.h>
 #include <stdio.h>
@@ -51,11 +54,8 @@
 #include <unistd.h>
 
 #include "deroulement/deroulement.h"
-#include "error_handler/error_handler.h"
-#include "ligne/ligne.h"
 #include "model/client_thread.h"
 #include "model/datacontext.h"
-#include "resolv/resolv.h"
 
 static struct Client_Thread* _chercherWorkerLibre(
     struct Client_Thread** client_threads);

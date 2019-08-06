@@ -10,9 +10,8 @@
 
 #include "datacontext.h"
 
+#include <error_handler.h>
 #include <stdlib.h>
-
-#include "../error_handler/error_handler.h"
 
 /**
  * @brief Créer et initialise le contexte de données global.

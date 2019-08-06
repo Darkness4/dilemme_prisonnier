@@ -28,10 +28,13 @@
 
 #include <arpa/inet.h>
 #include <assert.h>
+#include <error_handler.h>
 #include <fcntl.h>
+#include <ligne.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <resolv.h>
 #include <semaphore.h>
 #include <signal.h>
 #include <stdio.h>
@@ -43,10 +46,6 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-
-#include "error_handler/error_handler.h"
-#include "ligne/ligne.h"
-#include "resolv/resolv.h"
 
 /// Affiche l'aide.
 static void printHelp(void);

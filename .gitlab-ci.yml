@@ -28,12 +28,16 @@ build-linux:
   image: alpine:latest
   stage: build
   script: 
-  - apk add build-base
-  - make -j4
+  - apk add build-base cmake ninja
+  - mkdir build
+  - cd build
+  - cmake -Gninja ..
+  - ninja
   artifacts:
     paths:
       - bin/${TARGET}_client
       - bin/${TARGET}_server
+      - bin/server.properties
     expire_in: 1 week
   only:
   - master
@@ -51,8 +55,11 @@ test-build-linux:
   image: alpine:latest
   stage: build
   script:
-  - apk add build-base
-  - make -j4
+  - apk add build-base cmake ninja
+  - mkdir build
+  - cd build
+  - cmake -Gninja ..
+  - ninja
   except:
   - master
   - tags

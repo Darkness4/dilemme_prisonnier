@@ -18,7 +18,7 @@ void erreur_pthread_IO(const char *message);
 /**
  * @brief Print un message d'erreur et exit failure.
  *
- * @param message Message d'erreur.
+ * @param format Format of the string.
  */
 void erreur(const char *format, ...);
 

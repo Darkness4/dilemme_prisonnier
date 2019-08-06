@@ -33,7 +33,7 @@ int lireLigne (int fd, char *buffer) ;
   n'est pas ecrit),
   -1 en cas d'erreur
 */
-int ecrireLigne (int fd, char *buffer) ;
+long ecrireLigne (int fd, char *buffer) ;
 
 #endif
 

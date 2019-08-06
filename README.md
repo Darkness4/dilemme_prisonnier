@@ -64,16 +64,23 @@ Notre version multijoueur est différente de l'original :
 Installez les dépendances nécessaires si vous ne l'avez pas déjà fait :
 
 ```sh
-apt install build-essential
+apt install build-essential cmake
 ```
 
-Ensuite, utilisez le Makefile :
+Eventuellement, `ninja`, pour compiler rapidement :
+
+```sh
+apt install ninja
+```
+
+Ensuite, utilisez CMake :
 
 ```sh
 cd dilemme-prisonnier
-make -j4  # ou make executable -j4
-          # Si debug: make debug -j4
-          # Egalement, make clean (objs) ou make remove (objs + bin)
+mkdir build
+cd build
+cmake -Gninja ..
+ninja
 ```
 
 ## Usage

@@ -32,12 +32,11 @@
 
 #include "joueur.h"
 
+#include <error_handler.h>
+#include <ligne.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "../error_handler/error_handler.h"
-#include "../ligne/ligne.h"
 
 /**
  * @brief Crée et initialise un struct Joueur.

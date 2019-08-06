@@ -17,11 +17,11 @@
 
 #include "deroulement.h"
 
+#include <error_handler.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
 
-#include "../error_handler/error_handler.h"
 #include "../model/datacontext.h"
 #include "../view/joueur_view.h"
 #include "../view/match_view.h"
@@ -33,8 +33,8 @@
  * @param val DC datacontext.
  * @return void* Exit code.
  */
-void* deroulement(void* val) {
-  struct DC* datacontext = (struct DC*)val;
+void *deroulement(void *val) {
+  struct DC *datacontext = (struct DC *)val;
   while (1) {
     while (!sontPretListeJoueurs(datacontext->liste_joueurs)) {
       while (!sontPretListeJoueurs(datacontext->liste_joueurs)) continue;
