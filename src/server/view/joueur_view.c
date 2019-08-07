@@ -29,8 +29,9 @@ void afficherScoreListeJoueurs(struct ListeJoueurs* liste_joueurs) {
 
   qsort(liste_tri, nb_joueurs, sizeof(struct Joueur*), cmpfonction);
   for (int i = 0; i < nb_joueurs; i++) {
-    sprintf(ligne_client, "%s: %li\n", liste_tri[nb_joueurs - 1 - i]->pseudo,
-            liste_tri[nb_joueurs - 1 - i]->score);
+    snprintf(ligne_client, sizeof(ligne_client), "%s: %li\n",
+             liste_tri[nb_joueurs - 1 - i]->pseudo,
+             liste_tri[nb_joueurs - 1 - i]->score);
     // Broadcast
     broadcastJoueurs(liste_joueurs, ligne_client);
   }
@@ -46,7 +47,8 @@ int cmpfonction(const void* a, const void* b) {
 /// Affiche son propre score à lui-même.
 void afficherScoreJoueur(struct Joueur* joueur) {
   char ligne_client[BUFSIZ];
-  sprintf(ligne_client, "%s: %li\n", joueur->pseudo, joueur->score);
+  snprintf(ligne_client, sizeof(ligne_client), "%s: %li\n", joueur->pseudo,
+           joueur->score);
   ecrireLigne(joueur->canal, ligne_client);
 }
 
@@ -55,13 +57,15 @@ long indicateurNiveauxJoueurs(struct Joueur* joueur1, struct Joueur* joueur2) {
   char ligne_client[BUFSIZ];
   int lgEcr;
   if (joueur1->score > joueur2->score) {
-    sprintf(ligne_client, "%s est leader.\n", joueur1->pseudo);
+    snprintf(ligne_client, sizeof(ligne_client), "%s est leader.\n",
+             joueur1->pseudo);
     lgEcr = ecrireLigne(joueur1->canal, ligne_client);
     lgEcr += ecrireLigne(joueur2->canal, ligne_client);
     if (lgEcr <= -1) erreur_IO("ecrireLigne");
 
   } else if (joueur1->score < joueur2->score) {
-    sprintf(ligne_client, "%s est leader.\n", joueur2->pseudo);
+    snprintf(ligne_client, sizeof(ligne_client), "%s est leader.\n",
+             joueur2->pseudo);
     lgEcr = ecrireLigne(joueur1->canal, ligne_client);
     lgEcr += ecrireLigne(joueur2->canal, ligne_client);
     if (lgEcr <= -1) erreur_IO("ecrireLigne");

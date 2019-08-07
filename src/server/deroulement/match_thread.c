@@ -130,16 +130,16 @@ static void *_matchThread(void *val) {
       printf("[DEBUG THREAD] %s VS %s: %s a trahi %s!\n",
              match->joueur[0]->pseudo, match->joueur[1]->pseudo,
              match->joueur[0]->pseudo, match->joueur[1]->pseudo);
-      sprintf(buf, "%s a trahi %s!\n", match->joueur[0]->pseudo,
-              match->joueur[1]->pseudo);
+      snprintf(buf, sizeof(buf), "%s a trahi %s!\n", match->joueur[0]->pseudo,
+               match->joueur[1]->pseudo);
       _printTo2(match->joueur, buf);
     } else if (match->joueur[0]->choix == COOPERER &&
                match->joueur[1]->choix == TRAHIR) {
       printf("[DEBUG THREAD] %s VS %s: %s a trahi %s!\n",
              match->joueur[0]->pseudo, match->joueur[1]->pseudo,
              match->joueur[1]->pseudo, match->joueur[0]->pseudo);
-      sprintf(buf, "%s a trahi %s!\n", match->joueur[1]->pseudo,
-              match->joueur[0]->pseudo);
+      snprintf(buf, sizeof(buf), "%s a trahi %s!\n", match->joueur[1]->pseudo,
+               match->joueur[0]->pseudo);
       _printTo2(match->joueur, buf);
     } else if (match->joueur[0]->choix == COOPERER &&
                match->joueur[1]->choix == COOPERER) {
@@ -244,8 +244,11 @@ static void _checkCHOIX(struct Match *match) {
     match->joueur[1]->score += CONFIG.SCORE_2COOP;
   } else {
     char errout[100];
-    sprintf(errout, "Le match %s VS %s a reçu un choix inattendu !\n",
-            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
+
+    snprintf(errout, sizeof(errout),
+             "Le match %s VS %s a reçu un choix inattendu !\n",
+             match->joueur[0]->pseudo, match->joueur[1]->pseudo);
+
     erreur_pthread_IO(errout);
   }
 }
@@ -254,7 +257,7 @@ static void _printTo2(struct Joueur **joueurs, const char *format, ...) {
   char buf[BUFSIZ];
   va_list liste_arg;
   va_start(liste_arg, format);
-  vsprintf(buf, format, liste_arg);
+  vsnprintf(buf, sizeof(buf), format, liste_arg);
   va_end(liste_arg);
   ecrireLigne(joueurs[0]->canal, buf);
   ecrireLigne(joueurs[1]->canal, buf);
