@@ -1,0 +1,5 @@
+<map id="ListeJoueurs" name="ListeJoueurs">
+<area shape="rect" id="node1" title="Liste de joueurs connectés." alt="" coords="5,97,101,124"/>
+<area shape="rect" id="node2" href="$structJoueur.html" title="Données relative au Joueur." alt="" coords="96,7,157,33"/>
+<area shape="rect" id="node3" href="$structMatch.html" title="Contexte de données d&#39;un match." alt="" coords="147,97,205,124"/>
+</map>

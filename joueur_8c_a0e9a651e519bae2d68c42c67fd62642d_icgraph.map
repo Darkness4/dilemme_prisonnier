@@ -1,0 +1,4 @@
+<map id="creerJoueur" name="creerJoueur">
+<area shape="rect" id="node1" title="Crée et initialise un struct Joueur." alt="" coords="184,5,275,32"/>
+<area shape="rect" id="node2" href="$joueur_8c.html#a36aaae751bca51ac61db1000c5ad84b3" title="Clone les Joueurs et la liste de Joueurs." alt="" coords="5,5,136,32"/>
+</map>

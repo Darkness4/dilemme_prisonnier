@@ -1,0 +1,8 @@
+<map id="DC" name="DC">
+<area shape="rect" id="node1" title="Contexte de donnnées global." alt="" coords="194,288,237,315"/>
+<area shape="rect" id="node2" href="$structListeMatches.html" title="Liste de matches." alt="" coords="5,148,105,175"/>
+<area shape="rect" id="node3" href="$structMatch.html" title="Contexte de données d&#39;un match." alt="" coords="114,5,173,32"/>
+<area shape="rect" id="node4" href="$structJoueur.html" title="Données relative au Joueur." alt="" coords="185,96,246,123"/>
+<area shape="rect" id="node5" href="$structClient__Thread.html" title="Contexte de données d&#39;un thread Client." alt="" coords="164,199,267,225"/>
+<area shape="rect" id="node6" href="$structListeJoueurs.html" title="Liste de joueurs connectés." alt="" coords="291,199,387,225"/>
+</map>

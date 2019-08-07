@@ -1,0 +1,9 @@
+<map id="detruireJoueur" name="detruireJoueur">
+<area shape="rect" id="node1" title="Supprime le Joueur et libère la mémoire." alt="" coords="341,107,445,133"/>
+<area shape="rect" id="node2" href="$joueur_8c.html#a317dce9a508465143f9ff7cce8654df1" title="Supprime les Joueurs, la liste de Joueurs et libère la mémoire." alt="" coords="151,5,289,32"/>
+<area shape="rect" id="node3" href="$joueur_8c.html#ac0e42942f17e7a4facb9027366fa52dc" title="Ejecte un Joueur tel un LIFO." alt="" coords="179,56,261,83"/>
+<area shape="rect" id="node4" href="$joueur_8c.html#aea4d8c255a7f86b0f0bfae8d85c550d3" title="Ejecte un Joueur précis par canal." alt="" coords="152,107,288,133"/>
+<area shape="rect" id="node5" href="$joueur_8c.html#a76f073f6371a9286f38d2d3ce7ae34d8" title="Ejecte un Joueur par ETAT." alt="" coords="157,157,283,184"/>
+<area shape="rect" id="node7" href="$joueur_8c.html#a6e295fa786415133ab520937b481d20b" title="Ejecte un Joueur précis." alt="" coords="147,208,293,235"/>
+<area shape="rect" id="node6" href="$deroulement_8c.html#aa409de814c3e931189e00e02b893d3a9" title="Deroulement de chaque partie." alt="" coords="5,157,99,184"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="broadcastJoueurs" name="broadcastJoueurs">
+<area shape="rect" id="node1" title="Transmet un texte à tous les joueurs." alt="" coords="368,31,493,57"/>
+<area shape="rect" id="node2" href="$joueur__view_8c.html#af9fdd99ce67afdba676569e51bf394f3" title="Affiche le score de tout le monde à tout le monde." alt="" coords="147,5,320,32"/>
+<area shape="rect" id="node3" href="$deroulement_8c.html#aa409de814c3e931189e00e02b893d3a9" title="Deroulement de chaque partie." alt="" coords="5,31,99,57"/>
+</map>

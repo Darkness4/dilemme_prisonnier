@@ -1,0 +1,4 @@
+<map id="Match" name="Match">
+<area shape="rect" id="node1" title="Contexte de données d&#39;un match." alt="" coords="18,5,77,32"/>
+<area shape="rect" id="node2" href="$structJoueur.html" title="Données relative au Joueur." alt="" coords="17,96,78,123"/>
+</map>

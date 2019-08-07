@@ -1,0 +1,5 @@
+<map id="Client_Thread" name="Client_Thread">
+<area shape="rect" id="node1" title="Contexte de données d&#39;un thread Client." alt="" coords="5,97,108,124"/>
+<area shape="rect" id="node2" href="$structJoueur.html" title="Données relative au Joueur." alt="" coords="97,7,158,33"/>
+<area shape="rect" id="node3" href="$structMatch.html" title="Contexte de données d&#39;un match." alt="" coords="150,97,209,124"/>
+</map>
