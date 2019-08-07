@@ -36,6 +36,7 @@ void afficherScoreListeJoueurs(struct ListeJoueurs* liste_joueurs) {
   }
 }
 
+/// Compare le score des deux joueurs
 int cmpfonction(const void* a, const void* b) {
   const struct Joueur* joueur1 = *(const struct Joueur**)a;
   const struct Joueur* joueur2 = *(const struct Joueur**)b;

@@ -153,8 +153,8 @@ char* popJoueurParPseudo(struct ListeJoueurs* liste_joueurs, char* pseudo) {
  * NONE = Not found.
  *
  * @param liste_joueurs Pointer vers la struct ListeJoueurs.
- * @param pseudo Etat du Joueur à éjecter
- * @return char* Pseudonyme du Joueur éjecté
+ * @param etat Etat du Joueur à éjecter
+ * @return EtatJoueur Etat du Joueur éjecté
  */
 enum EtatJoueur popJoueurParEtat(struct ListeJoueurs* liste_joueurs,
                                  enum EtatJoueur etat) {
