@@ -70,7 +70,7 @@ apt install build-essential cmake
 Eventuellement, `ninja`, pour compiler rapidement :
 
 ```sh
-apt install ninja
+apt install ninja-build
 ```
 
 Ensuite, utilisez le script Shell (à n'importe quel emplacement) :

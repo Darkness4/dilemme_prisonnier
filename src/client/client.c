@@ -119,7 +119,7 @@ int main(int argc, char const *argv[]) {
   } else {  // processus de lecture
     char ligne_client[BUFSIZ];
     while (1) {
-      fgets(ligne_client, BUFSIZ, stdin);
+      scanf("%256s", ligne_client);
       lgEcr = ecrireLigne(soc, ligne_client);
       if (lgEcr == -1) erreur_IO("ecrireLigne");
       if (strcmp(ligne_client, "/quit\n") == 0) {

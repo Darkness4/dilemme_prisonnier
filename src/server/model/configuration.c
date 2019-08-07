@@ -29,19 +29,14 @@ struct Config lireConfig(void) {
   char value[BUFSIZ];
   char line[BUFSIZ];
   FILE *configFile;
-  int fd;
-  /* Remove possible symlinks */
-  unlink(CONFIG_FILE);
-  fd = open(CONFIG_FILE, O_RDONLY);
+  const int fd = open(CONFIG_FILE, O_RDONLY, 0400);
   if (fd == -1) erreur_IO("open: server.properties");
-  /* Get a FILE*, as they are easier and more efficient than plan file
-   * descriptors */
   configFile = fdopen(fd, "r");
   if (configFile == NULL) erreur_IO("fopen: server.properties");
 
-  while (fgets(line, BUFSIZ, configFile) != NULL) {
+  while (fscanf(configFile, "%256[^\n]\n", line) != EOF) {
     if (sscanf(line, "%32[^=]=%32s", properties, value) == 2) {
-      printf("%s=%s\n", properties, value);
+      printf("%s: %s\n", properties, value);
       if (strcmp(properties, "max-players") == 0) {
         long max_players;
         sscanf(value, "%li", &max_players);

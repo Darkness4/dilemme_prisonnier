@@ -146,7 +146,8 @@ int main(int argc, char const* argv[]) {
     if (sem_wait(&sem_global) != 0) erreur_IO("sem_wait");
     thread_libre = _chercherWorkerLibre(datacontext->client_threads);
     thread_libre->canal = canal;
-    strlcpy(thread_libre->pseudo, pseudo, sizeof(thread_libre->pseudo));
+    strncpy(thread_libre->pseudo, pseudo, BUFSIZ - 1);
+    thread_libre->pseudo[BUFSIZ - 1] = '\0';
     thread_libre->joueur = creerJoueur(thread_libre->pseudo);
     ajouterJoueur(datacontext->liste_joueurs, thread_libre->joueur);
     if (sem_post(&thread_libre->sem) != 0) erreur_IO("sem_post");

@@ -34,7 +34,7 @@ static void _checkELIMINE(struct Match *match);
 /// Vérifie le bon fonctionnement des choix lors du match.
 static void _checkCHOIX(struct Match *match);
 /// Envoyer du texte aux deux joueurs du Match.
-static void _printTo2(struct Joueur **joueurs, const char *fmt, ...);
+static void _printTo2(struct Joueur **joueurs, char *output);
 
 /**
  * @brief Créer tout les workers pour chaque matches.
@@ -111,7 +111,8 @@ static void *_matchThread(void *val) {
            match->round_count);
     printf("[DEBUG THREAD] %s VS %s: Waiting for decisions...\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo);
-    _printTo2(match->joueur, "Serveur> Round %i !\n", match->round_count + 1);
+    snprintf(buf, BUFSIZ, "Serveur> Round %i !\n", match->round_count + 1);
+    _printTo2(match->joueur, buf);
     _printTo2(match->joueur, "Serveur> Souhaitez-vous trahir ou coopérer ?\n");
     _printTo2(match->joueur, "CMDS: /trahir /coop /quit\n");
 
@@ -131,7 +132,7 @@ static void *_matchThread(void *val) {
       printf("[DEBUG THREAD] %s VS %s: %s a trahi %s!\n",
              match->joueur[0]->pseudo, match->joueur[1]->pseudo,
              match->joueur[0]->pseudo, match->joueur[1]->pseudo);
-      snprintf(buf, sizeof(buf), "%s a trahi %s!\n", match->joueur[0]->pseudo,
+      snprintf(buf, BUFSIZ, "%s a trahi %s!\n", match->joueur[0]->pseudo,
                match->joueur[1]->pseudo);
       _printTo2(match->joueur, buf);
     } else if (match->joueur[0]->choix == COOPERER &&
@@ -139,7 +140,7 @@ static void *_matchThread(void *val) {
       printf("[DEBUG THREAD] %s VS %s: %s a trahi %s!\n",
              match->joueur[0]->pseudo, match->joueur[1]->pseudo,
              match->joueur[1]->pseudo, match->joueur[0]->pseudo);
-      snprintf(buf, sizeof(buf), "%s a trahi %s!\n", match->joueur[1]->pseudo,
+      snprintf(buf, BUFSIZ, "%s a trahi %s!\n", match->joueur[1]->pseudo,
                match->joueur[0]->pseudo);
       _printTo2(match->joueur, buf);
     } else if (match->joueur[0]->choix == COOPERER &&
@@ -167,8 +168,10 @@ static void *_matchThread(void *val) {
     printf("[DEBUG THREAD] %s VS %s: Round %i ended !\n",
            match->joueur[0]->pseudo, match->joueur[1]->pseudo,
            match->round_count);
-    _printTo2(match->joueur, "Serveur> <== Round %i END ==>\n",
-              match->round_count + 1);
+
+    snprintf(buf, BUFSIZ, "Serveur> <== Round %i END ==>\n",
+             match->round_count + 1);
+    _printTo2(match->joueur, buf);
 
     afficherScoreJoueur(match->joueur[0]);
     afficherScoreJoueur(match->joueur[1]);
@@ -246,44 +249,14 @@ static void _checkCHOIX(struct Match *match) {
   } else {
     char errout[100];
 
-    snprintf(errout, sizeof(errout),
-             "Le match %s VS %s a reçu un choix inattendu !\n",
+    snprintf(errout, 100, "Le match %s VS %s a reçu un choix inattendu !\n",
              match->joueur[0]->pseudo, match->joueur[1]->pseudo);
 
     erreur_pthread_IO(errout);
   }
 }
 
-static void _printTo2(struct Joueur **joueurs, const char *fmt, ...) {
-  int n;
-  size_t size = BUFSIZ;
-  char *p, *np;
-  va_list liste_arg;
-
-  if ((p = malloc(size)) == NULL) return erreur_IO("malloc");
-
-  while (1) {
-    /* Try to print in the allocated space */
-    va_start(liste_arg, fmt);
-    n = vsnprintf(p, size, fmt, liste_arg);
-    va_end(liste_arg);
-
-    /* Check error code */
-    if (n < 0) erreur_IO("vsnprintf");
-
-    /* If that worked, return the string */
-    if (n < size) break;
-
-    /* Else try again with more space */
-    size = n + 1; /* Precisely what is needed */
-
-    if ((np = realloc(p, size)) == NULL) {
-      free(p);
-      erreur_IO("realloc");
-    } else {
-      p = np;
-    }
-  }
-  ecrireLigne(joueurs[0]->canal, p);
-  ecrireLigne(joueurs[1]->canal, p);
+static void _printTo2(struct Joueur **joueurs, char *output) {
+  ecrireLigne(joueurs[0]->canal, output);
+  ecrireLigne(joueurs[1]->canal, output);
 }

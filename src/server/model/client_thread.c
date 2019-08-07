@@ -205,7 +205,7 @@ static void _sessionClient(struct Joueur* joueur) {
         } else {
           adversaire_id = !joueur->id_joueur_match;
           char buf[BUFSIZ + 10];
-          if (snprintf(buf, sizeof(buf), "%s> %s\n", joueur->pseudo,
+          if (snprintf(buf, BUFSIZ + 10, "%s> %s\n", joueur->pseudo,
                        ligne_serveur) <= -1)
             erreur_IO("ecrireLigne");
           lgEcr = ecrireLigne(joueur->match->joueur[adversaire_id]->canal, buf);

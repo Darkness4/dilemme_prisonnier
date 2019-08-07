@@ -284,7 +284,7 @@ void broadcastAutreJoueurs(struct Joueur* joueur, char* texte) {
   struct Joueur* joueurGauche = joueur->prev;
   char texte_final[BUFSIZ];
 
-  snprintf(texte_final, sizeof(texte_final), "%s> %s\n", joueur->pseudo, texte);
+  snprintf(texte_final, BUFSIZ, "%s> %s\n", joueur->pseudo, texte);
 
   while (joueurDroite != NULL) {
     ecrireLigne(joueurDroite->canal, texte_final);
