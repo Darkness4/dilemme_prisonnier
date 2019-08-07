@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(dilemme_prisonnier VERSION 1.1.0)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
 find_library(ERROR_HANDLER error_handler HINTS lib)
