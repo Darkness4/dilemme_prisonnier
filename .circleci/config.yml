@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run: 
           name: Install dependencies
-          command: 'apk add alpine-sdk musl cmake ninja'
+          command: 'apk add alpine-sdk libc6-compat musl cmake ninja'
       - run: 
           name: Build binaries
           command: 'sh scripts/build.sh'
