@@ -253,12 +253,36 @@ static void _checkCHOIX(struct Match *match) {
   }
 }
 
-static void _printTo2(struct Joueur **joueurs, const char *format, ...) {
-  char buf[BUFSIZ];
+static void _printTo2(struct Joueur **joueurs, const char *fmt, ...) {
+  int n;
+  size_t size = BUFSIZ;
+  char *p, *np;
   va_list liste_arg;
-  va_start(liste_arg, format);
-  vsnprintf(buf, sizeof(buf), format, liste_arg);
-  va_end(liste_arg);
-  ecrireLigne(joueurs[0]->canal, buf);
-  ecrireLigne(joueurs[1]->canal, buf);
+
+  if ((p = malloc(size)) == NULL) return erreur_IO("malloc");
+
+  while (1) {
+    /* Try to print in the allocated space */
+    va_start(liste_arg, fmt);
+    n = vsnprintf(p, size, fmt, liste_arg);
+    va_end(liste_arg);
+
+    /* Check error code */
+    if (n < 0) erreur_IO("vsnprintf");
+
+    /* If that worked, return the string */
+    if (n < size) break;
+
+    /* Else try again with more space */
+    size = n + 1; /* Precisely what is needed */
+
+    if ((np = realloc(p, size)) == NULL) {
+      free(p);
+      return NULL;
+    } else {
+      p = np;
+    }
+  }
+  ecrireLigne(joueurs[0]->canal, p);
+  ecrireLigne(joueurs[1]->canal, p);
 }
