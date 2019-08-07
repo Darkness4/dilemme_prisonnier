@@ -1,6 +1,6 @@
 #!/bin/sh
-script_path=`dirname $0`
-
+script_path=$(dirname `realpath $0`)
+echo $script_path
 cd "$script_path/../"
 mkdir -p build
 cd build
