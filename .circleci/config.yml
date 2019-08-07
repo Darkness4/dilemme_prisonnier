@@ -20,7 +20,7 @@ jobs:
       - checkout
       - run: 
           name: Install dependencies
-          command: 'apk add doxygen graphviz ghostscript-fonts'
+          command: 'apk add doxygen graphviz ghostscript-fonts ca-certificates'
       - run: 
           name: Build documentations
           command: 'doxygen Doxyfile'

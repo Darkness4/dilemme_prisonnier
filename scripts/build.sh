@@ -1,9 +1,13 @@
 #!/bin/sh
 script_path=$(dirname `realpath $0`)
-echo $script_path
+echo $PWD
+echo "Moving to $script_path"
 cd "$script_path/../"
+echo $PWD
 mkdir -p build
+echo "Moving to build"
 cd build
+echo $PWD
 if which cmake; then
     if which ninja; then
         cmake -GNinja .. || (echo "cmake ninja Failed" && exit 1)
