@@ -21,6 +21,7 @@
 #include <ligne.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "../model/datacontext.h"
@@ -33,7 +34,7 @@ static void _checkELIMINE(struct Match *match);
 /// Vérifie le bon fonctionnement des choix lors du match.
 static void _checkCHOIX(struct Match *match);
 /// Envoyer du texte aux deux joueurs du Match.
-static void _printTo2(struct Joueur **joueurs, const char *format, ...);
+static void _printTo2(struct Joueur **joueurs, const char *fmt, ...);
 
 /**
  * @brief Créer tout les workers pour chaque matches.
@@ -278,7 +279,7 @@ static void _printTo2(struct Joueur **joueurs, const char *fmt, ...) {
 
     if ((np = realloc(p, size)) == NULL) {
       free(p);
-      return NULL;
+      erreur_IO("realloc");
     } else {
       p = np;
     }

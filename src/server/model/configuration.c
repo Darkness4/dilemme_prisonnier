@@ -28,7 +28,7 @@ struct Config lireConfig(void) {
   if (configFile == NULL) erreur_IO("fopen: server.properties");
 
   while (fgets(line, BUFSIZ, configFile) != NULL) {
-    if (sscanf(line, "%[^=]=%as", properties, value) == 2) {
+    if (sscanf(line, "%256[^=]=%256s", properties, value) == 2) {
       printf("%s=%s\n", properties, value);
       if (strcmp(properties, "max-players") == 0) {
         long max_players;
