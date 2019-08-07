@@ -4,6 +4,7 @@ echo $PWD
 echo "Moving to $script_path/../"
 cd "$script_path/../"
 echo $PWD
+rm -rf build
 mkdir -p build
 echo "Moving to build"
 cd build
