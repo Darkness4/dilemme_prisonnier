@@ -48,7 +48,7 @@ void *deroulement(void *val) {
           break;  // Fail
         }
         char text[BUFSIZ];
-        sprintf(text, "Serveur> Attendre %li\n", CONFIG.DURATION - i);
+        snprintf(text, BUFSIZ, "Serveur> Attendre %li\n", CONFIG.DURATION - i);
         broadcastJoueurs(datacontext->liste_joueurs, text);
         printf("[DEBUG] Attendre %li\n", CONFIG.DURATION - i);
         sleep(1);

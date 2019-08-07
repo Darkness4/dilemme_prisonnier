@@ -75,7 +75,7 @@ static void _printHelp(void);
 int main(int argc, char const* argv[]) {
   CONFIG = lireConfig();
   int soc, ret, canal;
-  short port;
+  long port;
   struct sockaddr_in adrEcoute, adrClient;
   unsigned int lgAdrClient;
   struct Client_Thread* thread_libre;
@@ -92,7 +92,7 @@ int main(int argc, char const* argv[]) {
   }
   if (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")) _printHelp();
 
-  port = (short)atoi(argv[1]);
+  port = strtol(argv[1], NULL, 10);
 
   printf("Server: creating a socket\n");
   soc = socket(AF_INET, SOCK_STREAM, 0);  // creation socket
@@ -101,7 +101,7 @@ int main(int argc, char const* argv[]) {
   adrEcoute.sin_family = AF_INET;
   adrEcoute.sin_addr.s_addr = INADDR_ANY;
   adrEcoute.sin_port = htons(port);
-  printf("Server: binding to INADDR_ANY address on port %d\n", port);
+  printf("Server: binding to INADDR_ANY address on port %ld\n", port);
   ret = bind(soc, (struct sockaddr*)&adrEcoute, sizeof(adrEcoute));
   if (ret < 0) erreur_IO("bind");
 

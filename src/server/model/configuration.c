@@ -10,9 +10,13 @@
 #include "configuration.h"
 
 #include <error_handler.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 struct Config lireConfig(void) {
   struct Config config = {
@@ -24,11 +28,19 @@ struct Config lireConfig(void) {
   char properties[BUFSIZ];
   char value[BUFSIZ];
   char line[BUFSIZ];
-  FILE *configFile = fopen(CONFIG_FILE, "r");
+  FILE *configFile;
+  int fd;
+  /* Remove possible symlinks */
+  unlink(CONFIG_FILE);
+  fd = open(CONFIG_FILE, O_RDONLY);
+  if (fd == -1) erreur_IO("open: server.properties");
+  /* Get a FILE*, as they are easier and more efficient than plan file
+   * descriptors */
+  configFile = fdopen(fd, "r");
   if (configFile == NULL) erreur_IO("fopen: server.properties");
 
   while (fgets(line, BUFSIZ, configFile) != NULL) {
-    if (sscanf(line, "%256[^=]=%256s", properties, value) == 2) {
+    if (sscanf(line, "%32[^=]=%32s", properties, value) == 2) {
       printf("%s=%s\n", properties, value);
       if (strcmp(properties, "max-players") == 0) {
         long max_players;
