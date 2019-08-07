@@ -73,15 +73,16 @@ Eventuellement, `ninja`, pour compiler rapidement :
 apt install ninja
 ```
 
-Ensuite, utilisez CMake :
+Ensuite, utilisez le script Shell (à n'importe quel emplacement) :
 
 ```sh
-cd dilemme-prisonnier
-mkdir build
-cd build
-cmake -Gninja ..
-ninja
+./scripts/build.sh
 ```
+
+Les fichiers générés sont dans :
+
+- bin/ (executable ici)
+- build/ (fichier compilées, libraires, etc)
 
 ## Usage
 
