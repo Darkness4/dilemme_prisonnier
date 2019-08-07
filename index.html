@@ -136,8 +136,13 @@ $(function() {
 <h2>Build</h2>
 <p>Installez les dépendances nécessaires si vous ne l'avez pas déjà fait :</p>
 <div class="fragment"><div class="line">apt install build-essential cmake</div></div><!-- fragment --><p>Eventuellement, <code>ninja</code>, pour compiler rapidement :</p>
-<div class="fragment"><div class="line">apt install ninja</div></div><!-- fragment --><p>Ensuite, utilisez CMake :</p>
-<div class="fragment"><div class="line">cd dilemme-prisonnier</div><div class="line">mkdir build</div><div class="line">cd build</div><div class="line">cmake -Gninja ..</div><div class="line">ninja</div></div><!-- fragment --><h2>Usage</h2>
+<div class="fragment"><div class="line">apt install ninja</div></div><!-- fragment --><p>Ensuite, utilisez le script Shell (à n'importe quel emplacement) :</p>
+<div class="fragment"><div class="line">./scripts/build.sh</div></div><!-- fragment --><p>Les fichiers générés sont dans :</p>
+<ul>
+<li>bin/ (executable ici)</li>
+<li>build/ (fichier compilées, libraires, etc)</li>
+</ul>
+<h2>Usage</h2>
 <h3>Linux</h3>
 <h4>Server</h4>
 <p>Par défaut, les paramètres de jeu (situé dans <a href="./bin/server.properties">server.properties</a>) sont les suivant :</p>
