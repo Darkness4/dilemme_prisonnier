@@ -3,24 +3,17 @@ project(dilemme_prisonnier VERSION 1.1.0)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
-add_library(
-    error_handler SHARED
-    shared/error_handler/error_handler.c
-)
-add_library(
-    ligne SHARED
-    shared/ligne/ligne.c
-)
-add_library(
-    resolv SHARED
-    shared/resolv/resolv.c
-)
+find_library(ERROR_HANDLER error_handler HINTS lib)
+find_library(LIGNE ligne HINTS lib)
+find_library(RESOLV resolv HINTS lib)
 
-include_directories(
-    shared/error_handler
-    shared/ligne
-    shared/resolv
-)
+message("---Listing local depedencies---")
+message("${ERROR_HANDLER}")
+message("${LIGNE}")
+message("${RESOLV}")
+message("---End listing local depedencies---")
+
+include_directories(include)
 
 add_subdirectory(src/client)
 add_subdirectory(src/server)

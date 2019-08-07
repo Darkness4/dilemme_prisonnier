@@ -15,8 +15,8 @@ add_library(model ${model_source_files})
 
 target_link_libraries(
   model
-  error_handler
-  ligne
+  "${ERROR_HANDLER}"
+  "${LIGNE}"
   view
   Threads::Threads
 )

@@ -9,9 +9,9 @@ add_library(deroulement ${deroulement_source_files})
 
 target_link_libraries(
   deroulement
-  error_handler
+  "${ERROR_HANDLER}"
+  "${LIGNE}"
   model
   view
-  ligne
   Threads::Threads
 )

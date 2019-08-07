@@ -9,7 +9,7 @@ add_library(view ${view_source_files})
 
 target_link_libraries(
   view 
-  error_handler
-  ligne
+  "${ERROR_HANDLER}"
+  "${LIGNE}"
   model
 )

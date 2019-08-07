@@ -1,7 +1,7 @@
 #!/bin/sh
 script_path=$(dirname `realpath $0`)
 echo $PWD
-echo "Moving to $script_path"
+echo "Moving to $script_path/../"
 cd "$script_path/../"
 echo $PWD
 mkdir -p build

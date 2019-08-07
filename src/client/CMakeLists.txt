@@ -10,9 +10,9 @@ add_executable(dilemme_prisonnier_client ${client_source_files})
 
 target_link_libraries(
     dilemme_prisonnier_client
-    error_handler
-    ligne
-    resolv
+    "${ERROR_HANDLER}"
+    "${LIGNE}"
+    "${RESOLV}"
     pthread
     Threads::Threads
 )

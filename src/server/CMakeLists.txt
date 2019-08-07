@@ -15,9 +15,9 @@ add_executable(dilemme_prisonnier_server ${server_source_files})
 target_link_libraries(
     dilemme_prisonnier_server
     deroulement
-    error_handler
-    ligne
-    resolv
+    "${ERROR_HANDLER}"
+    "${LIGNE}"
+    "${RESOLV}"
     model
     Threads::Threads
 )
